@@ -11,8 +11,6 @@ namespace AutoClicker
         private Keys hotkey;
         private Win32.fsModifiers hotkeyNodifiers;
 
-        private Thread countdownThread;
-
         public MainForm()
         {
             InitializeComponent();
@@ -239,28 +237,12 @@ namespace AutoClicker
             DelayHandler(null, null);
             CountHandler(null, null);
 
-            clicker.NextClick += HandleNextClick;
             clicker.Finished += HandleFinished;
-        }
-
-        private void HandleNextClick(object sender, AutoClicker.NextClickEventArgs e)
-        {
-            countdownThread = new Thread(() => CountDown(e.NextClick));
-            countdownThread.Start();
         }
 
         private void HandleFinished(object sender, EventArgs e)
         {
             EnableControls();
-        }
-
-        private void CountDown(int Milliseconds)
-        {
-            for (int i = 0; i < Milliseconds; i += 10)
-            {
-                tslStatus.Text = string.Format("Next click: {0}ms", Milliseconds - i);
-                Thread.Sleep(9);
-            }
         }
 
         private void ClickTypeHandler(object sender, EventArgs e)
@@ -430,7 +412,6 @@ namespace AutoClicker
             else
             {
                 clicker.Stop();
-                countdownThread.Abort();
                 EnableControls();
             }
         }
@@ -465,7 +446,6 @@ namespace AutoClicker
 
         private void EnableControls()
         {
-            tslStatus.Text = "Not currently doing much helpful here to be honest";
             SetEnabled(grpClickType, true);
             SetEnabled(grpLocation, true);
             SetEnabled(grpDelay, true);
