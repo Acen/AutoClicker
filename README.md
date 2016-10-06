@@ -8,3 +8,4 @@ Automatically clicks the mouse for you.
 - Continue until stopped or after a number of clicks.
 - Hotkey support with almost every key + Shift, Control, and Alt modifiers.
 - Costs less than what I cloned.
+- Minimize to tray.
