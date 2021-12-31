@@ -221,7 +221,7 @@
             this.btnToggle.TabIndex = 3;
             this.btnToggle.Text = "Start";
             this.btnToggle.UseVisualStyleBackColor = true;
-            this.btnToggle.Click += new System.EventHandler(this.btnToggle_Click);
+            this.btnToggle.Click += new System.EventHandler(this.BtnToggle_Click);
             // 
             // btnHotkeyRemove
             // 
@@ -231,7 +231,7 @@
             this.btnHotkeyRemove.TabIndex = 2;
             this.btnHotkeyRemove.Text = "Clear Hotkey";
             this.btnHotkeyRemove.UseVisualStyleBackColor = true;
-            this.btnHotkeyRemove.Click += new System.EventHandler(this.btnHotkeyRemove_Click);
+            this.btnHotkeyRemove.Click += new System.EventHandler(this.BtnHotkeyRemove_Click);
             // 
             // txtHotkey
             // 
@@ -240,7 +240,7 @@
             this.txtHotkey.Size = new System.Drawing.Size(296, 20);
             this.txtHotkey.TabIndex = 0;
             this.txtHotkey.Text = "None";
-            this.txtHotkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHotkey_KeyDown);
+            this.txtHotkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtHotkey_KeyDown);
             // 
             // grpCount
             // 
@@ -462,7 +462,7 @@
             this.btnSelect.TabIndex = 16;
             this.btnSelect.Text = "Select...";
             this.btnSelect.UseVisualStyleBackColor = true;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            this.btnSelect.Click += new System.EventHandler(this.BtnSelect_Click);
             // 
             // label6
             // 
@@ -652,13 +652,6 @@
             this.rdbLocationMouse.UseVisualStyleBackColor = true;
             this.rdbLocationMouse.CheckedChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // notifyIcon1
-            // 
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "Auto Clicker";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -673,7 +666,6 @@
             this.Text = "Auto Clicker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.grpMain.ResumeLayout(false);
             this.grpClickType.ResumeLayout(false);
             this.grpClickType.PerformLayout();
