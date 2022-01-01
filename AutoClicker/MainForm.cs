@@ -8,7 +8,7 @@ namespace AutoClicker
 	{
 		private AutoClicker clicker;
 		private Keys hotkey;
-		private Win32.fsModifiers hotkeyNodifiers;
+		private Win32.FsModifiers hotkeyNodifiers;
 
 		// Have settings stored in appdata instead of next to the executable
 		static readonly string appdata_path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -30,32 +30,22 @@ namespace AutoClicker
 				using (BinaryWriter w = new BinaryWriter(fs))
 				{
 					// Button type
-					if (rdbClickSingleLeft.Checked)
-						w.Write((byte)1);
+					w.Write(rdbClickLeft.Checked);
 
-					else if (rdbClickSingleMiddle.Checked)
-						w.Write((byte)2);
+					w.Write(rdbClickMiddle.Checked);
 
-					else if (rdbClickSingleRight.Checked)
-						w.Write((byte)3);
+					w.Write(rdbClickRight.Checked);
 
-					else if (rdbClickDoubleLeft.Checked)
-						w.Write((byte)4);
-
-					else if (rdbClickDoubleMiddle.Checked)
-						w.Write((byte)5);
-
-					else if (rdbClickDoubleRight.Checked)
-						w.Write((byte)6);
+					w.Write(rdbClickDouble.Checked);
 
 					// Location info
-					if (rdbLocationFixed.Checked)
+					if (rdbLocationMouse.Checked)
 						w.Write((byte)1);
 
-					else if (rdbLocationMouse.Checked)
+					else if (rdbLocationRandom.Checked)
 						w.Write((byte)2);
 
-					else if (rdbLocationRandom.Checked)
+					else if (rdbLocationFixed.Checked)
 						w.Write((byte)3);
 
 					else if (rdbLocationRandomArea.Checked)
@@ -80,16 +70,19 @@ namespace AutoClicker
 					w.Write((int)numDelayRangeMax.Value);
 
 					// Count info
-					if (rdbCount.Checked)
+					if (rdbUntilStopped.Checked)
 						w.Write((byte)1);
 
-					else if (rdbUntilStopped.Checked)
+					else if (rdbCount.Checked)
 						w.Write((byte)2);
 
 					w.Write((int)numCount.Value);
 
 					// Hotkey info
-					w.Write((int)hotkey);
+					if (txtHotkey.Text == "None")
+						w.Write(0x0);
+					else
+						w.Write((int)hotkey);
 				}
 			}
 		}
@@ -102,7 +95,10 @@ namespace AutoClicker
 				{
 					using (BinaryReader r = new BinaryReader(fs))
 					{
-						byte buttonType = r.ReadByte();
+						bool ClickLeft = r.ReadBoolean();
+						bool ClickMiddle = r.ReadBoolean();
+						bool ClickRight = r.ReadBoolean();
+						bool ClickDouble = r.ReadBoolean();
 
 						byte locationType = r.ReadByte();
 						int fixedX = r.ReadInt32();
@@ -122,38 +118,21 @@ namespace AutoClicker
 
 						hotkey = (Keys)r.ReadInt32();
 
-						switch (buttonType)
-						{
-							case 1:
-								rdbClickSingleLeft.Checked = true;
-								break;
-							case 2:
-								rdbClickSingleMiddle.Checked = true;
-								break;
-							case 3:
-								rdbClickSingleRight.Checked = true;
-								break;
-							case 4:
-								rdbClickDoubleLeft.Checked = true;
-								break;
-							case 5:
-								rdbClickDoubleMiddle.Checked = true;
-								break;
-							case 6:
-								rdbClickDoubleRight.Checked = true;
-								break;
-						}
+						rdbClickLeft.Checked = ClickLeft;
+						rdbClickMiddle.Checked = ClickMiddle;
+						rdbClickRight.Checked = ClickRight;
+						rdbClickDouble.Checked = ClickDouble;
 
 						switch (locationType)
 						{
 							case 1:
-								rdbLocationFixed.Checked = true;
-								break;
-							case 2:
 								rdbLocationMouse.Checked = true;
 								break;
-							case 3:
+							case 2:
 								rdbLocationRandom.Checked = true;
+								break;
+							case 3:
+								rdbLocationFixed.Checked = true;
 								break;
 							case 4:
 								rdbLocationRandomArea.Checked = true;
@@ -184,10 +163,10 @@ namespace AutoClicker
 						switch (countType)
 						{
 							case 1:
-								rdbCount.Checked = true;
+								rdbUntilStopped.Checked = true;
 								break;
 							case 2:
-								rdbUntilStopped.Checked = true;
+								rdbCount.Checked = true;
 								break;
 						}
 
@@ -198,13 +177,13 @@ namespace AutoClicker
 							var hotkeyModifiers = hotkey & Keys.Modifiers;
 							hotkeyNodifiers = 0;
 							if ((hotkeyModifiers & Keys.Shift) != 0)
-								hotkeyNodifiers |= Win32.fsModifiers.Shift;
+								hotkeyNodifiers |= Win32.FsModifiers.Shift;
 
 							if ((hotkeyModifiers & Keys.Control) != 0)
-								hotkeyNodifiers |= Win32.fsModifiers.Control;
+								hotkeyNodifiers |= Win32.FsModifiers.Control;
 
 							if ((hotkeyModifiers & Keys.Alt) != 0)
-								hotkeyNodifiers |= Win32.fsModifiers.Alt;
+								hotkeyNodifiers |= Win32.FsModifiers.Alt;
 
 							SetHotkey();
 						}
@@ -222,8 +201,9 @@ namespace AutoClicker
 			DelayHandler(null, null);
 			CountHandler(null, null);
 
+			SetEnabled(btnStop, false);
 			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
-				btnHotkeyRemove.Enabled = false;
+				SetEnabled(btnHotkeyRemove, false);
 
 			clicker.Finished += HandleFinished;
 		}
@@ -235,22 +215,24 @@ namespace AutoClicker
 
 		private void ClickTypeHandler(object sender, EventArgs e)
 		{
-			AutoClicker.ButtonType buttonType;
 			bool doubleClick = false;
+			bool leftClick = false;
+			bool middleClick = false;
+			bool rightClick = false;
 
-			if (rdbClickSingleLeft.Checked || rdbClickDoubleLeft.Checked)
-				buttonType = AutoClicker.ButtonType.Left;
+			if (rdbClickLeft.Checked)
+				leftClick = true;
 
-			else if (rdbClickSingleMiddle.Checked || rdbClickDoubleMiddle.Checked)
-				buttonType = AutoClicker.ButtonType.Middle;
+			if (rdbClickMiddle.Checked)
+				middleClick = true;
 
-			else
-				buttonType = AutoClicker.ButtonType.Right;
+			if (rdbClickRight.Checked)
+				rightClick = true;
 
-			if (rdbClickDoubleLeft.Checked || rdbClickDoubleMiddle.Checked || rdbClickDoubleRight.Checked)
+			if (rdbClickDouble.Checked)
 				doubleClick = true;
 
-			clicker.UpdateButton(buttonType, doubleClick);
+			clicker.UpdateButton(leftClick, middleClick, rightClick, doubleClick);
 		}
 
 		private void LocationHandler(object sender, EventArgs e)
@@ -383,19 +365,52 @@ namespace AutoClicker
 			UnsetHotkey();
 		}
 
-		private void BtnToggle_Click(object sender, EventArgs e)
+		private void BtnStart_Click(object sender, EventArgs e)
 		{
-			if (!clicker.IsAlive)
-			{
-				clicker.Start();
-				DisableControls();
-			}
-			else
-			{
-				clicker.Stop();
-				EnableControls();
-			}
+			clicker.Start();
+			DisableControls();
 		}
+
+		private void BtnStop_Click(object sender, EventArgs e)
+		{
+			clicker.Stop();
+			EnableControls();
+		}
+
+		private void BtnReset_Click(object sender, EventArgs e)
+		{
+			rdbClickLeft.Checked = true;
+			rdbClickMiddle.Checked = false;
+			rdbClickRight.Checked = false;
+			rdbClickDouble.Checked = false;
+
+			rdbLocationMouse.Checked = true;
+			rdbLocationRandom.Checked = false;
+			rdbLocationFixed.Checked = false;
+			rdbLocationRandomArea.Checked = false;
+			numFixedX.Value = 0;
+			numFixedY.Value = 0;
+
+			numRandomX.Value = 0;
+			numRandomY.Value = 0;
+			numRandomWidth.Value = 100;
+			numRandomHeight.Value = 100;
+
+			rdbDelayFixed.Checked = true;
+			rdbDelayRange.Checked = false;
+			numDelayFixed.Value = 100;
+			numDelayRangeMin.Value = 500;
+			numDelayRangeMax.Value = 1000;
+
+			rdbUntilStopped.Checked = true;
+			rdbCount.Checked = false;
+			numCount.Value = 100;
+
+			UnsetHotkey();
+			
+			SaveSettings();
+		}
+
 
 		delegate void SetEnabledCallback(Control Control, bool Enabled);
 		private void SetEnabled(Control Control, bool Enabled)
@@ -418,24 +433,9 @@ namespace AutoClicker
 				var d = new SetButtonTextCallback(SetButtonText);
 				this.Invoke(d, Control, Text);
 			}
-			
+
 			else
 				Control.Text = Text;
-		}
-		
-		private void EnableControls()
-		{
-			SetEnabled(grpClickType, true);
-			SetEnabled(grpLocation, true);
-			SetEnabled(grpDelay, true);
-			SetEnabled(grpCount, true);
-			SetButtonText(btnToggle, "Start");
-			btnHotkeyRemove.Enabled = true;
-			//grpClickType.Enabled = true;
-			//grpLocation.Enabled = true;
-			//grpDelay.Enabled = true;
-			//grpCount.Enabled = true;
-			//btnToggle.Text = "Start";
 		}
 
 		private void DisableControls()
@@ -444,13 +444,30 @@ namespace AutoClicker
 			SetEnabled(grpLocation, false);
 			SetEnabled(grpDelay, false);
 			SetEnabled(grpCount, false);
-			SetButtonText(btnToggle, "Stop");
-			btnHotkeyRemove.Enabled = false;
-			//grpClickType.Enabled = false;
-			//grpLocation.Enabled = false;
-			//grpDelay.Enabled = false;
-			//grpCount.Enabled = false;
-			//btnToggle.Text = "Stop";
+			SetEnabled(grpSettings, false);
+
+			SetEnabled(txtHotkey, false);
+			SetEnabled(label11, false);
+			SetEnabled(btnHotkeyRemove, false);
+			SetEnabled(btnStart, false);
+			SetEnabled(btnStop, true);
+		}
+
+		private void EnableControls()
+		{
+			SetEnabled(grpClickType, true);
+			SetEnabled(grpLocation, true);
+			SetEnabled(grpDelay, true);
+			SetEnabled(grpCount, true);
+			SetEnabled(grpSettings, true);
+
+			SetEnabled(txtHotkey, true);
+			SetEnabled(label11, true);
+			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
+				SetEnabled(btnHotkeyRemove, false);
+			else SetEnabled(btnHotkeyRemove, true);
+			SetEnabled(btnStart, true);
+			SetEnabled(btnStop, false);
 		}
 
 		protected override void WndProc(ref Message m)
@@ -463,10 +480,13 @@ namespace AutoClicker
 				if (txtHotkey.Focused)
 					return;
 
-				Win32.fsModifiers modifiers = (Win32.fsModifiers)((int)m.LParam & 0xFFFF);
+				Win32.FsModifiers modifiers = (Win32.FsModifiers)((int)m.LParam & 0xFFFF);
 				Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
 				if (key == (hotkey & Keys.KeyCode) && modifiers == hotkeyNodifiers)
-					BtnToggle_Click(null, null);
+					if (!clicker.IsAlive)
+						BtnStart_Click(null, null);
+					else
+						BtnStop_Click(null, null);
 			}
 		}
 
@@ -482,13 +502,13 @@ namespace AutoClicker
 				// Extract modifiers
 				hotkeyNodifiers = 0;
 				if ((e.Modifiers & Keys.Shift) != 0)
-					hotkeyNodifiers |= Win32.fsModifiers.Shift;
-				
+					hotkeyNodifiers |= Win32.FsModifiers.Shift;
+
 				if ((e.Modifiers & Keys.Control) != 0)
-					hotkeyNodifiers |= Win32.fsModifiers.Control;
+					hotkeyNodifiers |= Win32.FsModifiers.Control;
 
 				if ((e.Modifiers & Keys.Alt) != 0)
-					hotkeyNodifiers |= Win32.fsModifiers.Alt;
+					hotkeyNodifiers |= Win32.FsModifiers.Alt;
 
 				SetHotkey();
 			}

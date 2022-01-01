@@ -8,14 +8,9 @@ namespace AutoClicker
 	class AutoClicker
 	{
 		#region "Button"
-		public enum ButtonType
-		{
-			Left,
-			Middle,
-			Right
-		}
-
-		private ButtonType buttonType;
+		private bool leftClick;
+		private bool middleClick;
+		private bool rightClick;
 		private bool doubleClick;
 		#endregion
 
@@ -60,7 +55,9 @@ namespace AutoClicker
 
 		#region "Update storage"
 		private bool buttonUpdated;
-		private ButtonType tmpButtonType;
+		private bool tmpLeftClick;
+		private bool tmpMiddleClick;
+		private bool tmpRightClick;
 		private bool tmpDoubleClick;
 
 		private bool locationUpdated;
@@ -166,7 +163,7 @@ namespace AutoClicker
 						Thread.Sleep(50);
 					}
 
-					if (buttonType == ButtonType.Left)
+					if (leftClick)
 					{
 						Win32.INPUT inputDown = new Win32.INPUT
 						{
@@ -188,7 +185,7 @@ namespace AutoClicker
 						inputs.Add(inputUp);
 					}
 
-					if (buttonType == ButtonType.Middle)
+					if (middleClick)
 					{
 						Win32.INPUT inputDown = new Win32.INPUT
 						{
@@ -210,7 +207,7 @@ namespace AutoClicker
 						inputs.Add(inputUp);
 					}
 
-					if (buttonType == ButtonType.Right)
+					if (rightClick)
 					{
 						Win32.INPUT inputDown = new Win32.INPUT
 						{
@@ -287,7 +284,9 @@ namespace AutoClicker
 		{
 			if (buttonUpdated)
 			{
-				buttonType = tmpButtonType;
+				leftClick = tmpLeftClick;
+				middleClick = tmpMiddleClick;
+				rightClick = tmpRightClick;
 				doubleClick = tmpDoubleClick;
 
 				buttonUpdated = false;
@@ -323,9 +322,11 @@ namespace AutoClicker
 			//System.Diagnostics.Debug.Print("Settings synced");
 		}
 
-		public void UpdateButton(ButtonType ButtonType, bool DoubleClick)
+		public void UpdateButton(bool LeftClick, bool MiddleClick, bool RightClick, bool DoubleClick)
 		{
-			tmpButtonType = ButtonType;
+			tmpLeftClick = LeftClick;
+			tmpMiddleClick = MiddleClick;
+			tmpRightClick = RightClick;
 			tmpDoubleClick = DoubleClick;
 
 			buttonUpdated = true;

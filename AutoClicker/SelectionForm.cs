@@ -16,12 +16,9 @@ namespace AutoClicker
 
 		public int RectangleHeight = new int();
 		public int RectangleWidth = new int();
-
-		Graphics g;
-		Pen BlackPen = new Pen(Color.Black, 1);
-		SolidBrush TransparentBrush = new SolidBrush(Color.White);
-		Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 1);
-		SolidBrush EraserBrush = new SolidBrush(Color.FromArgb(051, 153, 255));
+        readonly Graphics g;
+        readonly Pen BlackPen = new Pen(Color.Black, 1);
+        readonly Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 1);
 
 		private MainForm instanceRef = null;
 		public MainForm InstanceRef

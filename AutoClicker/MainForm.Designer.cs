@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpMain = new System.Windows.Forms.GroupBox();
+            this.grpSettings = new System.Windows.Forms.GroupBox();
+            this.btnReset = new System.Windows.Forms.Button();
             this.grpClickType = new System.Windows.Forms.GroupBox();
-            this.rdbClickDoubleRight = new System.Windows.Forms.RadioButton();
-            this.rdbClickDoubleMiddle = new System.Windows.Forms.RadioButton();
-            this.rdbClickDoubleLeft = new System.Windows.Forms.RadioButton();
-            this.rdbClickSingleRight = new System.Windows.Forms.RadioButton();
-            this.rdbClickSingleMiddle = new System.Windows.Forms.RadioButton();
-            this.rdbClickSingleLeft = new System.Windows.Forms.RadioButton();
+            this.rdbClickDouble = new System.Windows.Forms.CheckBox();
+            this.rdbClickRight = new System.Windows.Forms.CheckBox();
+            this.rdbClickMiddle = new System.Windows.Forms.CheckBox();
+            this.rdbClickLeft = new System.Windows.Forms.CheckBox();
             this.grpControls = new System.Windows.Forms.GroupBox();
+            this.btnStop = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
-            this.btnToggle = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
             this.btnHotkeyRemove = new System.Windows.Forms.Button();
             this.txtHotkey = new System.Windows.Forms.TextBox();
             this.grpCount = new System.Windows.Forms.GroupBox();
@@ -75,8 +75,8 @@
             this.rdbLocationFixed = new System.Windows.Forms.RadioButton();
             this.rdbLocationRandom = new System.Windows.Forms.RadioButton();
             this.rdbLocationMouse = new System.Windows.Forms.RadioButton();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.grpMain.SuspendLayout();
+            this.grpSettings.SuspendLayout();
             this.grpClickType.SuspendLayout();
             this.grpControls.SuspendLayout();
             this.grpCount.SuspendLayout();
@@ -96,6 +96,7 @@
             // 
             // grpMain
             // 
+            this.grpMain.Controls.Add(this.grpSettings);
             this.grpMain.Controls.Add(this.grpClickType);
             this.grpMain.Controls.Add(this.grpControls);
             this.grpMain.Controls.Add(this.grpCount);
@@ -103,131 +104,138 @@
             this.grpMain.Controls.Add(this.grpLocation);
             this.grpMain.Location = new System.Drawing.Point(12, 13);
             this.grpMain.Name = "grpMain";
-            this.grpMain.Size = new System.Drawing.Size(750, 311);
+            this.grpMain.Size = new System.Drawing.Size(570, 311);
             this.grpMain.TabIndex = 0;
             this.grpMain.TabStop = false;
             this.grpMain.Text = "Click details";
             // 
+            // grpSettings
+            // 
+            this.grpSettings.Controls.Add(this.btnReset);
+            this.grpSettings.Location = new System.Drawing.Point(422, 105);
+            this.grpSettings.Name = "grpSettings";
+            this.grpSettings.Size = new System.Drawing.Size(142, 112);
+            this.grpSettings.TabIndex = 4;
+            this.grpSettings.TabStop = false;
+            this.grpSettings.Text = "Settings";
+            // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(34, 44);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 25);
+            this.btnReset.TabIndex = 6;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.BtnReset_Click);
+            // 
             // grpClickType
             // 
-            this.grpClickType.Controls.Add(this.rdbClickDoubleRight);
-            this.grpClickType.Controls.Add(this.rdbClickDoubleMiddle);
-            this.grpClickType.Controls.Add(this.rdbClickDoubleLeft);
-            this.grpClickType.Controls.Add(this.rdbClickSingleRight);
-            this.grpClickType.Controls.Add(this.rdbClickSingleMiddle);
-            this.grpClickType.Controls.Add(this.rdbClickSingleLeft);
-            this.grpClickType.Location = new System.Drawing.Point(353, 105);
+            this.grpClickType.Controls.Add(this.rdbClickDouble);
+            this.grpClickType.Controls.Add(this.rdbClickRight);
+            this.grpClickType.Controls.Add(this.rdbClickMiddle);
+            this.grpClickType.Controls.Add(this.rdbClickLeft);
+            this.grpClickType.Location = new System.Drawing.Point(269, 105);
             this.grpClickType.Name = "grpClickType";
-            this.grpClickType.Size = new System.Drawing.Size(391, 112);
+            this.grpClickType.Size = new System.Drawing.Size(140, 112);
             this.grpClickType.TabIndex = 2;
             this.grpClickType.TabStop = false;
             this.grpClickType.Text = "Click type";
             // 
-            // rdbClickDoubleRight
+            // rdbClickDouble
             // 
-            this.rdbClickDoubleRight.AutoSize = true;
-            this.rdbClickDoubleRight.Location = new System.Drawing.Point(100, 67);
-            this.rdbClickDoubleRight.Name = "rdbClickDoubleRight";
-            this.rdbClickDoubleRight.Size = new System.Drawing.Size(87, 17);
-            this.rdbClickDoubleRight.TabIndex = 5;
-            this.rdbClickDoubleRight.Text = "Right Double";
-            this.rdbClickDoubleRight.UseVisualStyleBackColor = true;
-            this.rdbClickDoubleRight.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickDouble.AutoSize = true;
+            this.rdbClickDouble.Location = new System.Drawing.Point(6, 88);
+            this.rdbClickDouble.Name = "rdbClickDouble";
+            this.rdbClickDouble.Size = new System.Drawing.Size(60, 17);
+            this.rdbClickDouble.TabIndex = 3;
+            this.rdbClickDouble.Text = "Double";
+            this.rdbClickDouble.UseVisualStyleBackColor = true;
+            this.rdbClickDouble.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
             // 
-            // rdbClickDoubleMiddle
+            // rdbClickRight
             // 
-            this.rdbClickDoubleMiddle.AutoSize = true;
-            this.rdbClickDoubleMiddle.Location = new System.Drawing.Point(100, 43);
-            this.rdbClickDoubleMiddle.Name = "rdbClickDoubleMiddle";
-            this.rdbClickDoubleMiddle.Size = new System.Drawing.Size(93, 17);
-            this.rdbClickDoubleMiddle.TabIndex = 4;
-            this.rdbClickDoubleMiddle.Text = "Middle Double";
-            this.rdbClickDoubleMiddle.UseVisualStyleBackColor = true;
-            this.rdbClickDoubleMiddle.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickRight.AutoSize = true;
+            this.rdbClickRight.Location = new System.Drawing.Point(6, 65);
+            this.rdbClickRight.Name = "rdbClickRight";
+            this.rdbClickRight.Size = new System.Drawing.Size(51, 17);
+            this.rdbClickRight.TabIndex = 2;
+            this.rdbClickRight.Text = "Right";
+            this.rdbClickRight.UseVisualStyleBackColor = true;
+            this.rdbClickRight.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
             // 
-            // rdbClickDoubleLeft
+            // rdbClickMiddle
             // 
-            this.rdbClickDoubleLeft.AutoSize = true;
-            this.rdbClickDoubleLeft.Location = new System.Drawing.Point(100, 20);
-            this.rdbClickDoubleLeft.Name = "rdbClickDoubleLeft";
-            this.rdbClickDoubleLeft.Size = new System.Drawing.Size(80, 17);
-            this.rdbClickDoubleLeft.TabIndex = 3;
-            this.rdbClickDoubleLeft.Text = "Left Double";
-            this.rdbClickDoubleLeft.UseVisualStyleBackColor = true;
-            this.rdbClickDoubleLeft.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickMiddle.AutoSize = true;
+            this.rdbClickMiddle.Location = new System.Drawing.Point(6, 42);
+            this.rdbClickMiddle.Name = "rdbClickMiddle";
+            this.rdbClickMiddle.Size = new System.Drawing.Size(57, 17);
+            this.rdbClickMiddle.TabIndex = 1;
+            this.rdbClickMiddle.Text = "Middle";
+            this.rdbClickMiddle.UseVisualStyleBackColor = true;
+            this.rdbClickMiddle.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
             // 
-            // rdbClickSingleRight
+            // rdbClickLeft
             // 
-            this.rdbClickSingleRight.AutoSize = true;
-            this.rdbClickSingleRight.Location = new System.Drawing.Point(6, 67);
-            this.rdbClickSingleRight.Name = "rdbClickSingleRight";
-            this.rdbClickSingleRight.Size = new System.Drawing.Size(50, 17);
-            this.rdbClickSingleRight.TabIndex = 2;
-            this.rdbClickSingleRight.Text = "Right";
-            this.rdbClickSingleRight.UseVisualStyleBackColor = true;
-            this.rdbClickSingleRight.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
-            // 
-            // rdbClickSingleMiddle
-            // 
-            this.rdbClickSingleMiddle.AutoSize = true;
-            this.rdbClickSingleMiddle.Location = new System.Drawing.Point(6, 43);
-            this.rdbClickSingleMiddle.Name = "rdbClickSingleMiddle";
-            this.rdbClickSingleMiddle.Size = new System.Drawing.Size(56, 17);
-            this.rdbClickSingleMiddle.TabIndex = 1;
-            this.rdbClickSingleMiddle.Text = "Middle";
-            this.rdbClickSingleMiddle.UseVisualStyleBackColor = true;
-            this.rdbClickSingleMiddle.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
-            // 
-            // rdbClickSingleLeft
-            // 
-            this.rdbClickSingleLeft.AutoSize = true;
-            this.rdbClickSingleLeft.Checked = true;
-            this.rdbClickSingleLeft.Location = new System.Drawing.Point(6, 20);
-            this.rdbClickSingleLeft.Name = "rdbClickSingleLeft";
-            this.rdbClickSingleLeft.Size = new System.Drawing.Size(43, 17);
-            this.rdbClickSingleLeft.TabIndex = 0;
-            this.rdbClickSingleLeft.TabStop = true;
-            this.rdbClickSingleLeft.Text = "Left";
-            this.rdbClickSingleLeft.UseVisualStyleBackColor = true;
-            this.rdbClickSingleLeft.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickLeft.AutoSize = true;
+            this.rdbClickLeft.Checked = true;
+            this.rdbClickLeft.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.rdbClickLeft.Location = new System.Drawing.Point(6, 19);
+            this.rdbClickLeft.Name = "rdbClickLeft";
+            this.rdbClickLeft.Size = new System.Drawing.Size(44, 17);
+            this.rdbClickLeft.TabIndex = 0;
+            this.rdbClickLeft.Text = "Left";
+            this.rdbClickLeft.UseVisualStyleBackColor = true;
+            this.rdbClickLeft.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
             // 
             // grpControls
             // 
+            this.grpControls.Controls.Add(this.btnStop);
             this.grpControls.Controls.Add(this.label11);
-            this.grpControls.Controls.Add(this.btnToggle);
+            this.grpControls.Controls.Add(this.btnStart);
             this.grpControls.Controls.Add(this.btnHotkeyRemove);
             this.grpControls.Controls.Add(this.txtHotkey);
-            this.grpControls.Location = new System.Drawing.Point(353, 20);
+            this.grpControls.Location = new System.Drawing.Point(269, 20);
             this.grpControls.Name = "grpControls";
-            this.grpControls.Size = new System.Drawing.Size(391, 79);
+            this.grpControls.Size = new System.Drawing.Size(295, 79);
             this.grpControls.TabIndex = 1;
             this.grpControls.TabStop = false;
             this.grpControls.Text = "Controls";
             // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(87, 20);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(75, 25);
+            this.btnStop.TabIndex = 5;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.BtnStop_Click);
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 23);
+            this.label11.Location = new System.Drawing.Point(6, 53);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(41, 13);
             this.label11.TabIndex = 4;
             this.label11.Text = "Hotkey";
             // 
-            // btnToggle
+            // btnStart
             // 
-            this.btnToggle.Location = new System.Drawing.Point(310, 48);
-            this.btnToggle.Name = "btnToggle";
-            this.btnToggle.Size = new System.Drawing.Size(75, 25);
-            this.btnToggle.TabIndex = 3;
-            this.btnToggle.Text = "Start";
-            this.btnToggle.UseVisualStyleBackColor = true;
-            this.btnToggle.Click += new System.EventHandler(this.BtnToggle_Click);
+            this.btnStart.Location = new System.Drawing.Point(6, 20);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(75, 25);
+            this.btnStart.TabIndex = 3;
+            this.btnStart.Text = "Start";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // btnHotkeyRemove
             // 
-            this.btnHotkeyRemove.Location = new System.Drawing.Point(229, 16);
+            this.btnHotkeyRemove.Location = new System.Drawing.Point(204, 48);
             this.btnHotkeyRemove.Name = "btnHotkeyRemove";
-            this.btnHotkeyRemove.Size = new System.Drawing.Size(156, 25);
+            this.btnHotkeyRemove.Size = new System.Drawing.Size(80, 25);
             this.btnHotkeyRemove.TabIndex = 2;
             this.btnHotkeyRemove.Text = "Clear Hotkey";
             this.btnHotkeyRemove.UseVisualStyleBackColor = true;
@@ -235,9 +243,9 @@
             // 
             // txtHotkey
             // 
-            this.txtHotkey.Location = new System.Drawing.Point(8, 50);
+            this.txtHotkey.Location = new System.Drawing.Point(52, 50);
             this.txtHotkey.Name = "txtHotkey";
-            this.txtHotkey.Size = new System.Drawing.Size(296, 20);
+            this.txtHotkey.Size = new System.Drawing.Size(145, 20);
             this.txtHotkey.TabIndex = 0;
             this.txtHotkey.Text = "None";
             this.txtHotkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtHotkey_KeyDown);
@@ -250,7 +258,7 @@
             this.grpCount.Controls.Add(this.rdbUntilStopped);
             this.grpCount.Location = new System.Drawing.Point(6, 223);
             this.grpCount.Name = "grpCount";
-            this.grpCount.Size = new System.Drawing.Size(341, 75);
+            this.grpCount.Size = new System.Drawing.Size(250, 75);
             this.grpCount.TabIndex = 1;
             this.grpCount.TabStop = false;
             this.grpCount.Text = "Count";
@@ -258,7 +266,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(230, 47);
+            this.label1.Location = new System.Drawing.Point(182, 47);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 3;
@@ -273,7 +281,7 @@
             0,
             0});
             this.numCount.Name = "numCount";
-            this.numCount.Size = new System.Drawing.Size(120, 20);
+            this.numCount.Size = new System.Drawing.Size(70, 20);
             this.numCount.TabIndex = 2;
             this.numCount.Value = new decimal(new int[] {
             100,
@@ -316,9 +324,9 @@
             this.grpDelay.Controls.Add(this.numDelayRangeMin);
             this.grpDelay.Controls.Add(this.rdbDelayRange);
             this.grpDelay.Controls.Add(this.rdbDelayFixed);
-            this.grpDelay.Location = new System.Drawing.Point(353, 223);
+            this.grpDelay.Location = new System.Drawing.Point(269, 223);
             this.grpDelay.Name = "grpDelay";
-            this.grpDelay.Size = new System.Drawing.Size(391, 75);
+            this.grpDelay.Size = new System.Drawing.Size(295, 75);
             this.grpDelay.TabIndex = 1;
             this.grpDelay.TabStop = false;
             this.grpDelay.Text = "Delay";
@@ -326,7 +334,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(365, 49);
+            this.label10.Location = new System.Drawing.Point(269, 49);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(20, 13);
             this.label10.TabIndex = 13;
@@ -335,7 +343,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(222, 22);
+            this.label9.Location = new System.Drawing.Point(174, 22);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(20, 13);
             this.label9.TabIndex = 12;
@@ -350,7 +358,7 @@
             0,
             0});
             this.numDelayFixed.Name = "numDelayFixed";
-            this.numDelayFixed.Size = new System.Drawing.Size(120, 20);
+            this.numDelayFixed.Size = new System.Drawing.Size(70, 20);
             this.numDelayFixed.TabIndex = 11;
             this.numDelayFixed.Value = new decimal(new int[] {
             100,
@@ -362,7 +370,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(222, 49);
+            this.label8.Location = new System.Drawing.Point(174, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(10, 13);
             this.label8.TabIndex = 10;
@@ -370,14 +378,14 @@
             // 
             // numDelayRangeMax
             // 
-            this.numDelayRangeMax.Location = new System.Drawing.Point(239, 47);
+            this.numDelayRangeMax.Location = new System.Drawing.Point(191, 47);
             this.numDelayRangeMax.Maximum = new decimal(new int[] {
             1000000,
             0,
             0,
             0});
             this.numDelayRangeMax.Name = "numDelayRangeMax";
-            this.numDelayRangeMax.Size = new System.Drawing.Size(120, 20);
+            this.numDelayRangeMax.Size = new System.Drawing.Size(70, 20);
             this.numDelayRangeMax.TabIndex = 9;
             this.numDelayRangeMax.Value = new decimal(new int[] {
             1000,
@@ -395,7 +403,7 @@
             0,
             0});
             this.numDelayRangeMin.Name = "numDelayRangeMin";
-            this.numDelayRangeMin.Size = new System.Drawing.Size(120, 20);
+            this.numDelayRangeMin.Size = new System.Drawing.Size(70, 20);
             this.numDelayRangeMin.TabIndex = 8;
             this.numDelayRangeMin.Value = new decimal(new int[] {
             500,
@@ -449,7 +457,7 @@
             this.grpLocation.Controls.Add(this.rdbLocationMouse);
             this.grpLocation.Location = new System.Drawing.Point(6, 20);
             this.grpLocation.Name = "grpLocation";
-            this.grpLocation.Size = new System.Drawing.Size(341, 197);
+            this.grpLocation.Size = new System.Drawing.Size(250, 197);
             this.grpLocation.TabIndex = 0;
             this.grpLocation.TabStop = false;
             this.grpLocation.Text = "Location";
@@ -467,7 +475,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(171, 171);
+            this.label6.Location = new System.Drawing.Point(123, 171);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(38, 13);
             this.label6.TabIndex = 15;
@@ -475,14 +483,14 @@
             // 
             // numRandomHeight
             // 
-            this.numRandomHeight.Location = new System.Drawing.Point(215, 169);
+            this.numRandomHeight.Location = new System.Drawing.Point(167, 169);
             this.numRandomHeight.Maximum = new decimal(new int[] {
             1000000,
             0,
             0,
             0});
             this.numRandomHeight.Name = "numRandomHeight";
-            this.numRandomHeight.Size = new System.Drawing.Size(120, 20);
+            this.numRandomHeight.Size = new System.Drawing.Size(70, 20);
             this.numRandomHeight.TabIndex = 14;
             this.numRandomHeight.Value = new decimal(new int[] {
             100,
@@ -509,7 +517,7 @@
             0,
             0});
             this.numRandomWidth.Name = "numRandomWidth";
-            this.numRandomWidth.Size = new System.Drawing.Size(120, 20);
+            this.numRandomWidth.Size = new System.Drawing.Size(70, 20);
             this.numRandomWidth.TabIndex = 12;
             this.numRandomWidth.Value = new decimal(new int[] {
             100,
@@ -521,7 +529,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(197, 144);
+            this.label4.Location = new System.Drawing.Point(149, 144);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(14, 13);
             this.label4.TabIndex = 11;
@@ -529,14 +537,14 @@
             // 
             // numRandomY
             // 
-            this.numRandomY.Location = new System.Drawing.Point(215, 142);
+            this.numRandomY.Location = new System.Drawing.Point(167, 142);
             this.numRandomY.Maximum = new decimal(new int[] {
             1000000,
             0,
             0,
             0});
             this.numRandomY.Name = "numRandomY";
-            this.numRandomY.Size = new System.Drawing.Size(120, 20);
+            this.numRandomY.Size = new System.Drawing.Size(70, 20);
             this.numRandomY.TabIndex = 10;
             this.numRandomY.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
@@ -558,14 +566,14 @@
             0,
             0});
             this.numRandomX.Name = "numRandomX";
-            this.numRandomX.Size = new System.Drawing.Size(120, 20);
+            this.numRandomX.Size = new System.Drawing.Size(70, 20);
             this.numRandomX.TabIndex = 8;
             this.numRandomX.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(197, 93);
+            this.label3.Location = new System.Drawing.Point(149, 93);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(14, 13);
             this.label3.TabIndex = 7;
@@ -573,14 +581,14 @@
             // 
             // numFixedY
             // 
-            this.numFixedY.Location = new System.Drawing.Point(215, 91);
+            this.numFixedY.Location = new System.Drawing.Point(167, 91);
             this.numFixedY.Maximum = new decimal(new int[] {
             1000000,
             0,
             0,
             0});
             this.numFixedY.Name = "numFixedY";
-            this.numFixedY.Size = new System.Drawing.Size(120, 20);
+            this.numFixedY.Size = new System.Drawing.Size(70, 20);
             this.numFixedY.TabIndex = 6;
             this.numFixedY.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
@@ -602,7 +610,7 @@
             0,
             0});
             this.numFixedX.Name = "numFixedX";
-            this.numFixedX.Size = new System.Drawing.Size(120, 20);
+            this.numFixedX.Size = new System.Drawing.Size(70, 20);
             this.numFixedX.TabIndex = 4;
             this.numFixedX.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
@@ -656,7 +664,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(774, 333);
+            this.ClientSize = new System.Drawing.Size(594, 333);
             this.Controls.Add(this.grpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -667,6 +675,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.grpMain.ResumeLayout(false);
+            this.grpSettings.ResumeLayout(false);
             this.grpClickType.ResumeLayout(false);
             this.grpClickType.PerformLayout();
             this.grpControls.ResumeLayout(false);
@@ -729,16 +738,16 @@
         private System.Windows.Forms.RadioButton rdbLocationFixed;
         private System.Windows.Forms.RadioButton rdbLocationRandom;
         private System.Windows.Forms.RadioButton rdbLocationMouse;
-        private System.Windows.Forms.RadioButton rdbClickDoubleRight;
-        private System.Windows.Forms.RadioButton rdbClickDoubleMiddle;
-        private System.Windows.Forms.RadioButton rdbClickDoubleLeft;
-        private System.Windows.Forms.RadioButton rdbClickSingleRight;
-        private System.Windows.Forms.RadioButton rdbClickSingleMiddle;
-        private System.Windows.Forms.RadioButton rdbClickSingleLeft;
-        private System.Windows.Forms.Button btnToggle;
+        private System.Windows.Forms.CheckBox rdbClickDouble;
+        private System.Windows.Forms.CheckBox rdbClickRight;
+        private System.Windows.Forms.CheckBox rdbClickMiddle;
+        private System.Windows.Forms.CheckBox rdbClickLeft;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btnSelect;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.GroupBox grpSettings;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 

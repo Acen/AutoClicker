@@ -34,7 +34,7 @@ namespace AutoClicker
             CYScreen = 0x0001,
         }
 
-        public enum fsModifiers : uint
+        public enum FsModifiers : uint
         {
             Alt = 0x0001,
             Control = 0x0002,

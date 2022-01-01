@@ -7,7 +7,7 @@ namespace AutoClicker
 	{
 		public static string Convert(Keys keys)
 		{
-			return ConvertModifiers(keys) + " " + ConvertKeyPart(keys);
+			return ConvertModifiers(keys) + ConvertKeyPart(keys);
 		}
 
 		public static string ConvertModifiers(Keys keys)
@@ -27,11 +27,7 @@ namespace AutoClicker
 				output.Append("Alt + ");
 
 			string outString = output.ToString();
-			if (outString.Length > 0)
-				// Trim the space off
-				return outString.Substring(0, outString.Length - 1);
-
-			return "";
+			return outString.Substring(0, outString.Length);
 		}
 
 		public static string ConvertKeyPart(Keys keys)
