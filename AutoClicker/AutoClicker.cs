@@ -116,7 +116,7 @@ namespace AutoClicker
 						mi = new Win32.MOUSEINPUT
 						{
 							dx = Win32.CalculateAbsoluteCoordinateX(x),
-							dy = Win32.CalculateAbsoluteCoordinateX(y),
+							dy = Win32.CalculateAbsoluteCoordinateY(y),
 							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
 						}
 					};
@@ -159,9 +159,7 @@ namespace AutoClicker
 				{
 					// Add a delay if it's a double click.
 					if (i == 1)
-					{
 						Thread.Sleep(50);
-					}
 
 					if (leftClick)
 					{

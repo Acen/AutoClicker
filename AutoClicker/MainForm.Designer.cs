@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpMain = new System.Windows.Forms.GroupBox();
             this.grpSettings = new System.Windows.Forms.GroupBox();
+            this.CheckBoxStayOnTop = new System.Windows.Forms.CheckBox();
             this.btnReset = new System.Windows.Forms.Button();
             this.grpClickType = new System.Windows.Forms.GroupBox();
             this.rdbClickDouble = new System.Windows.Forms.CheckBox();
@@ -39,37 +40,38 @@
             this.rdbClickLeft = new System.Windows.Forms.CheckBox();
             this.grpControls = new System.Windows.Forms.GroupBox();
             this.btnStop = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
+            this.lblHotkey = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnHotkeyRemove = new System.Windows.Forms.Button();
             this.txtHotkey = new System.Windows.Forms.TextBox();
             this.grpCount = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblCountClicks = new System.Windows.Forms.Label();
             this.numCount = new System.Windows.Forms.NumericUpDown();
             this.rdbCount = new System.Windows.Forms.RadioButton();
             this.rdbUntilStopped = new System.Windows.Forms.RadioButton();
             this.grpDelay = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblDelayMS_2 = new System.Windows.Forms.Label();
+            this.lblDelayMS_1 = new System.Windows.Forms.Label();
             this.numDelayFixed = new System.Windows.Forms.NumericUpDown();
-            this.label8 = new System.Windows.Forms.Label();
+            this.lblDelayDash = new System.Windows.Forms.Label();
             this.numDelayRangeMax = new System.Windows.Forms.NumericUpDown();
             this.numDelayRangeMin = new System.Windows.Forms.NumericUpDown();
             this.rdbDelayRange = new System.Windows.Forms.RadioButton();
             this.rdbDelayFixed = new System.Windows.Forms.RadioButton();
             this.grpLocation = new System.Windows.Forms.GroupBox();
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
+            this.btnSelectFixed = new System.Windows.Forms.Button();
+            this.btnSelectRandom = new System.Windows.Forms.Button();
+            this.lblRandomHeight = new System.Windows.Forms.Label();
             this.numRandomHeight = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
+            this.lblRandomWidth = new System.Windows.Forms.Label();
             this.numRandomWidth = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblRandomY = new System.Windows.Forms.Label();
             this.numRandomY = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblRandomX = new System.Windows.Forms.Label();
             this.numRandomX = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblFixedY = new System.Windows.Forms.Label();
             this.numFixedY = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblFixedX = new System.Windows.Forms.Label();
             this.numFixedX = new System.Windows.Forms.NumericUpDown();
             this.rdbLocationRandomArea = new System.Windows.Forms.RadioButton();
             this.rdbLocationFixed = new System.Windows.Forms.RadioButton();
@@ -102,26 +104,38 @@
             this.grpMain.Controls.Add(this.grpCount);
             this.grpMain.Controls.Add(this.grpDelay);
             this.grpMain.Controls.Add(this.grpLocation);
-            this.grpMain.Location = new System.Drawing.Point(12, 13);
+            this.grpMain.Location = new System.Drawing.Point(10, 4);
             this.grpMain.Name = "grpMain";
-            this.grpMain.Size = new System.Drawing.Size(570, 311);
+            this.grpMain.Size = new System.Drawing.Size(565, 305);
             this.grpMain.TabIndex = 0;
             this.grpMain.TabStop = false;
             this.grpMain.Text = "Click details";
             // 
             // grpSettings
             // 
+            this.grpSettings.Controls.Add(this.CheckBoxStayOnTop);
             this.grpSettings.Controls.Add(this.btnReset);
-            this.grpSettings.Location = new System.Drawing.Point(422, 105);
+            this.grpSettings.Location = new System.Drawing.Point(421, 101);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(142, 112);
+            this.grpSettings.Size = new System.Drawing.Size(138, 112);
             this.grpSettings.TabIndex = 4;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings";
             // 
+            // CheckBoxStayOnTop
+            // 
+            this.CheckBoxStayOnTop.AutoSize = true;
+            this.CheckBoxStayOnTop.Location = new System.Drawing.Point(26, 32);
+            this.CheckBoxStayOnTop.Name = "CheckBoxStayOnTop";
+            this.CheckBoxStayOnTop.Size = new System.Drawing.Size(92, 17);
+            this.CheckBoxStayOnTop.TabIndex = 4;
+            this.CheckBoxStayOnTop.Text = "Always on top";
+            this.CheckBoxStayOnTop.UseVisualStyleBackColor = true;
+            this.CheckBoxStayOnTop.CheckedChanged += new System.EventHandler(this.CheckBoxStayOnTop_Press);
+            // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(34, 44);
+            this.btnReset.Location = new System.Drawing.Point(34, 57);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 25);
             this.btnReset.TabIndex = 6;
@@ -135,9 +149,9 @@
             this.grpClickType.Controls.Add(this.rdbClickRight);
             this.grpClickType.Controls.Add(this.rdbClickMiddle);
             this.grpClickType.Controls.Add(this.rdbClickLeft);
-            this.grpClickType.Location = new System.Drawing.Point(269, 105);
+            this.grpClickType.Location = new System.Drawing.Point(269, 101);
             this.grpClickType.Name = "grpClickType";
-            this.grpClickType.Size = new System.Drawing.Size(140, 112);
+            this.grpClickType.Size = new System.Drawing.Size(139, 112);
             this.grpClickType.TabIndex = 2;
             this.grpClickType.TabStop = false;
             this.grpClickType.Text = "Click type";
@@ -191,13 +205,13 @@
             // grpControls
             // 
             this.grpControls.Controls.Add(this.btnStop);
-            this.grpControls.Controls.Add(this.label11);
+            this.grpControls.Controls.Add(this.lblHotkey);
             this.grpControls.Controls.Add(this.btnStart);
             this.grpControls.Controls.Add(this.btnHotkeyRemove);
             this.grpControls.Controls.Add(this.txtHotkey);
-            this.grpControls.Location = new System.Drawing.Point(269, 20);
+            this.grpControls.Location = new System.Drawing.Point(269, 16);
             this.grpControls.Name = "grpControls";
-            this.grpControls.Size = new System.Drawing.Size(295, 79);
+            this.grpControls.Size = new System.Drawing.Size(290, 79);
             this.grpControls.TabIndex = 1;
             this.grpControls.TabStop = false;
             this.grpControls.Text = "Controls";
@@ -212,14 +226,14 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.BtnStop_Click);
             // 
-            // label11
+            // lblHotkey
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 53);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(41, 13);
-            this.label11.TabIndex = 4;
-            this.label11.Text = "Hotkey";
+            this.lblHotkey.AutoSize = true;
+            this.lblHotkey.Location = new System.Drawing.Point(6, 53);
+            this.lblHotkey.Name = "lblHotkey";
+            this.lblHotkey.Size = new System.Drawing.Size(41, 13);
+            this.lblHotkey.TabIndex = 4;
+            this.lblHotkey.Text = "Hotkey";
             // 
             // btnStart
             // 
@@ -245,6 +259,8 @@
             // 
             this.txtHotkey.Location = new System.Drawing.Point(52, 50);
             this.txtHotkey.Name = "txtHotkey";
+            this.txtHotkey.ReadOnly = true;
+            this.txtHotkey.ShortcutsEnabled = false;
             this.txtHotkey.Size = new System.Drawing.Size(145, 20);
             this.txtHotkey.TabIndex = 0;
             this.txtHotkey.Text = "None";
@@ -252,25 +268,25 @@
             // 
             // grpCount
             // 
-            this.grpCount.Controls.Add(this.label1);
+            this.grpCount.Controls.Add(this.lblCountClicks);
             this.grpCount.Controls.Add(this.numCount);
             this.grpCount.Controls.Add(this.rdbCount);
             this.grpCount.Controls.Add(this.rdbUntilStopped);
-            this.grpCount.Location = new System.Drawing.Point(6, 223);
+            this.grpCount.Location = new System.Drawing.Point(6, 219);
             this.grpCount.Name = "grpCount";
             this.grpCount.Size = new System.Drawing.Size(250, 75);
             this.grpCount.TabIndex = 1;
             this.grpCount.TabStop = false;
             this.grpCount.Text = "Count";
             // 
-            // label1
+            // lblCountClicks
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(182, 47);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(34, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "clicks";
+            this.lblCountClicks.AutoSize = true;
+            this.lblCountClicks.Location = new System.Drawing.Point(182, 47);
+            this.lblCountClicks.Name = "lblCountClicks";
+            this.lblCountClicks.Size = new System.Drawing.Size(34, 13);
+            this.lblCountClicks.TabIndex = 3;
+            this.lblCountClicks.Text = "clicks";
             // 
             // numCount
             // 
@@ -316,38 +332,38 @@
             // 
             // grpDelay
             // 
-            this.grpDelay.Controls.Add(this.label10);
-            this.grpDelay.Controls.Add(this.label9);
+            this.grpDelay.Controls.Add(this.lblDelayMS_2);
+            this.grpDelay.Controls.Add(this.lblDelayMS_1);
             this.grpDelay.Controls.Add(this.numDelayFixed);
-            this.grpDelay.Controls.Add(this.label8);
+            this.grpDelay.Controls.Add(this.lblDelayDash);
             this.grpDelay.Controls.Add(this.numDelayRangeMax);
             this.grpDelay.Controls.Add(this.numDelayRangeMin);
             this.grpDelay.Controls.Add(this.rdbDelayRange);
             this.grpDelay.Controls.Add(this.rdbDelayFixed);
-            this.grpDelay.Location = new System.Drawing.Point(269, 223);
+            this.grpDelay.Location = new System.Drawing.Point(269, 219);
             this.grpDelay.Name = "grpDelay";
-            this.grpDelay.Size = new System.Drawing.Size(295, 75);
+            this.grpDelay.Size = new System.Drawing.Size(290, 75);
             this.grpDelay.TabIndex = 1;
             this.grpDelay.TabStop = false;
             this.grpDelay.Text = "Delay";
             // 
-            // label10
+            // lblDelayMS_2
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(269, 49);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(20, 13);
-            this.label10.TabIndex = 13;
-            this.label10.Text = "ms";
+            this.lblDelayMS_2.AutoSize = true;
+            this.lblDelayMS_2.Location = new System.Drawing.Point(269, 49);
+            this.lblDelayMS_2.Name = "lblDelayMS_2";
+            this.lblDelayMS_2.Size = new System.Drawing.Size(20, 13);
+            this.lblDelayMS_2.TabIndex = 13;
+            this.lblDelayMS_2.Text = "ms";
             // 
-            // label9
+            // lblDelayMS_1
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(174, 22);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(20, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "ms";
+            this.lblDelayMS_1.AutoSize = true;
+            this.lblDelayMS_1.Location = new System.Drawing.Point(174, 22);
+            this.lblDelayMS_1.Name = "lblDelayMS_1";
+            this.lblDelayMS_1.Size = new System.Drawing.Size(20, 13);
+            this.lblDelayMS_1.TabIndex = 12;
+            this.lblDelayMS_1.Text = "ms";
             // 
             // numDelayFixed
             // 
@@ -367,14 +383,14 @@
             0});
             this.numDelayFixed.ValueChanged += new System.EventHandler(this.DelayHandler);
             // 
-            // label8
+            // lblDelayDash
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(174, 49);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(10, 13);
-            this.label8.TabIndex = 10;
-            this.label8.Text = "-";
+            this.lblDelayDash.AutoSize = true;
+            this.lblDelayDash.Location = new System.Drawing.Point(174, 49);
+            this.lblDelayDash.Name = "lblDelayDash";
+            this.lblDelayDash.Size = new System.Drawing.Size(10, 13);
+            this.lblDelayDash.TabIndex = 10;
+            this.lblDelayDash.Text = "-";
             // 
             // numDelayRangeMax
             // 
@@ -438,48 +454,59 @@
             // 
             // grpLocation
             // 
-            this.grpLocation.Controls.Add(this.btnSelect);
-            this.grpLocation.Controls.Add(this.label6);
+            this.grpLocation.Controls.Add(this.btnSelectFixed);
+            this.grpLocation.Controls.Add(this.btnSelectRandom);
+            this.grpLocation.Controls.Add(this.lblRandomHeight);
             this.grpLocation.Controls.Add(this.numRandomHeight);
-            this.grpLocation.Controls.Add(this.label7);
+            this.grpLocation.Controls.Add(this.lblRandomWidth);
             this.grpLocation.Controls.Add(this.numRandomWidth);
-            this.grpLocation.Controls.Add(this.label4);
+            this.grpLocation.Controls.Add(this.lblRandomY);
             this.grpLocation.Controls.Add(this.numRandomY);
-            this.grpLocation.Controls.Add(this.label5);
+            this.grpLocation.Controls.Add(this.lblRandomX);
             this.grpLocation.Controls.Add(this.numRandomX);
-            this.grpLocation.Controls.Add(this.label3);
+            this.grpLocation.Controls.Add(this.lblFixedY);
             this.grpLocation.Controls.Add(this.numFixedY);
-            this.grpLocation.Controls.Add(this.label2);
+            this.grpLocation.Controls.Add(this.lblFixedX);
             this.grpLocation.Controls.Add(this.numFixedX);
             this.grpLocation.Controls.Add(this.rdbLocationRandomArea);
             this.grpLocation.Controls.Add(this.rdbLocationFixed);
             this.grpLocation.Controls.Add(this.rdbLocationRandom);
             this.grpLocation.Controls.Add(this.rdbLocationMouse);
-            this.grpLocation.Location = new System.Drawing.Point(6, 20);
+            this.grpLocation.Location = new System.Drawing.Point(6, 16);
             this.grpLocation.Name = "grpLocation";
             this.grpLocation.Size = new System.Drawing.Size(250, 197);
             this.grpLocation.TabIndex = 0;
             this.grpLocation.TabStop = false;
             this.grpLocation.Text = "Location";
             // 
-            // btnSelect
+            // btnSelectFixed
             // 
-            this.btnSelect.Location = new System.Drawing.Point(102, 115);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(75, 25);
-            this.btnSelect.TabIndex = 16;
-            this.btnSelect.Text = "Select...";
-            this.btnSelect.UseVisualStyleBackColor = true;
-            this.btnSelect.Click += new System.EventHandler(this.BtnSelect_Click);
+            this.btnSelectFixed.Location = new System.Drawing.Point(101, 63);
+            this.btnSelectFixed.Name = "btnSelectFixed";
+            this.btnSelectFixed.Size = new System.Drawing.Size(75, 25);
+            this.btnSelectFixed.TabIndex = 17;
+            this.btnSelectFixed.Text = "Select...";
+            this.btnSelectFixed.UseVisualStyleBackColor = true;
+            this.btnSelectFixed.Click += new System.EventHandler(this.BtnSelectFixed_Click);
             // 
-            // label6
+            // btnSelectRandom
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(123, 171);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(38, 13);
-            this.label6.TabIndex = 15;
-            this.label6.Text = "Height";
+            this.btnSelectRandom.Location = new System.Drawing.Point(101, 114);
+            this.btnSelectRandom.Name = "btnSelectRandom";
+            this.btnSelectRandom.Size = new System.Drawing.Size(75, 25);
+            this.btnSelectRandom.TabIndex = 16;
+            this.btnSelectRandom.Text = "Select...";
+            this.btnSelectRandom.UseVisualStyleBackColor = true;
+            this.btnSelectRandom.Click += new System.EventHandler(this.BtnSelectRandom_Click);
+            // 
+            // lblRandomHeight
+            // 
+            this.lblRandomHeight.AutoSize = true;
+            this.lblRandomHeight.Location = new System.Drawing.Point(123, 171);
+            this.lblRandomHeight.Name = "lblRandomHeight";
+            this.lblRandomHeight.Size = new System.Drawing.Size(38, 13);
+            this.lblRandomHeight.TabIndex = 15;
+            this.lblRandomHeight.Text = "Height";
             // 
             // numRandomHeight
             // 
@@ -499,14 +526,14 @@
             0});
             this.numRandomHeight.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // label7
+            // lblRandomWidth
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 171);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 13);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "Width";
+            this.lblRandomWidth.AutoSize = true;
+            this.lblRandomWidth.Location = new System.Drawing.Point(6, 171);
+            this.lblRandomWidth.Name = "lblRandomWidth";
+            this.lblRandomWidth.Size = new System.Drawing.Size(35, 13);
+            this.lblRandomWidth.TabIndex = 13;
+            this.lblRandomWidth.Text = "Width";
             // 
             // numRandomWidth
             // 
@@ -526,14 +553,14 @@
             0});
             this.numRandomWidth.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // label4
+            // lblRandomY
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(149, 144);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(14, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Y";
+            this.lblRandomY.AutoSize = true;
+            this.lblRandomY.Location = new System.Drawing.Point(149, 144);
+            this.lblRandomY.Name = "lblRandomY";
+            this.lblRandomY.Size = new System.Drawing.Size(14, 13);
+            this.lblRandomY.TabIndex = 11;
+            this.lblRandomY.Text = "Y";
             // 
             // numRandomY
             // 
@@ -548,14 +575,14 @@
             this.numRandomY.TabIndex = 10;
             this.numRandomY.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // label5
+            // lblRandomX
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(27, 144);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(14, 13);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "X";
+            this.lblRandomX.AutoSize = true;
+            this.lblRandomX.Location = new System.Drawing.Point(27, 144);
+            this.lblRandomX.Name = "lblRandomX";
+            this.lblRandomX.Size = new System.Drawing.Size(14, 13);
+            this.lblRandomX.TabIndex = 9;
+            this.lblRandomX.Text = "X";
             // 
             // numRandomX
             // 
@@ -570,14 +597,14 @@
             this.numRandomX.TabIndex = 8;
             this.numRandomX.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // label3
+            // lblFixedY
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(149, 93);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Y";
+            this.lblFixedY.AutoSize = true;
+            this.lblFixedY.Location = new System.Drawing.Point(149, 93);
+            this.lblFixedY.Name = "lblFixedY";
+            this.lblFixedY.Size = new System.Drawing.Size(14, 13);
+            this.lblFixedY.TabIndex = 7;
+            this.lblFixedY.Text = "Y";
             // 
             // numFixedY
             // 
@@ -592,14 +619,14 @@
             this.numFixedY.TabIndex = 6;
             this.numFixedY.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
-            // label2
+            // lblFixedX
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(27, 93);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(14, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "X";
+            this.lblFixedX.AutoSize = true;
+            this.lblFixedX.Location = new System.Drawing.Point(27, 93);
+            this.lblFixedX.Name = "lblFixedX";
+            this.lblFixedX.Size = new System.Drawing.Size(14, 13);
+            this.lblFixedX.TabIndex = 5;
+            this.lblFixedX.Text = "X";
             // 
             // numFixedX
             // 
@@ -664,7 +691,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 333);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(585, 318);
             this.Controls.Add(this.grpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -676,6 +704,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.grpMain.ResumeLayout(false);
             this.grpSettings.ResumeLayout(false);
+            this.grpSettings.PerformLayout();
             this.grpClickType.ResumeLayout(false);
             this.grpClickType.PerformLayout();
             this.grpControls.ResumeLayout(false);
@@ -708,31 +737,31 @@
         private System.Windows.Forms.Button btnHotkeyRemove;
         private System.Windows.Forms.TextBox txtHotkey;
         private System.Windows.Forms.GroupBox grpCount;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblCountClicks;
         private System.Windows.Forms.NumericUpDown numCount;
         private System.Windows.Forms.RadioButton rdbCount;
         private System.Windows.Forms.RadioButton rdbUntilStopped;
         private System.Windows.Forms.GroupBox grpDelay;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblDelayMS_2;
+        private System.Windows.Forms.Label lblDelayMS_1;
         private System.Windows.Forms.NumericUpDown numDelayFixed;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblDelayDash;
         private System.Windows.Forms.NumericUpDown numDelayRangeMax;
         private System.Windows.Forms.NumericUpDown numDelayRangeMin;
         private System.Windows.Forms.RadioButton rdbDelayRange;
         private System.Windows.Forms.RadioButton rdbDelayFixed;
         private System.Windows.Forms.GroupBox grpLocation;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblRandomHeight;
         private System.Windows.Forms.NumericUpDown numRandomHeight;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblRandomWidth;
         private System.Windows.Forms.NumericUpDown numRandomWidth;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblRandomY;
         private System.Windows.Forms.NumericUpDown numRandomY;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblRandomX;
         private System.Windows.Forms.NumericUpDown numRandomX;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblFixedY;
         private System.Windows.Forms.NumericUpDown numFixedY;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblFixedX;
         private System.Windows.Forms.NumericUpDown numFixedX;
         private System.Windows.Forms.RadioButton rdbLocationRandomArea;
         private System.Windows.Forms.RadioButton rdbLocationFixed;
@@ -744,10 +773,12 @@
         private System.Windows.Forms.CheckBox rdbClickLeft;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button btnSelect;
+        private System.Windows.Forms.Label lblHotkey;
+        private System.Windows.Forms.Button btnSelectRandom;
         private System.Windows.Forms.GroupBox grpSettings;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnSelectFixed;
+        private System.Windows.Forms.CheckBox CheckBoxStayOnTop;
     }
 }
 

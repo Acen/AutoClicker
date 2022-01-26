@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace AutoClicker
 {
@@ -80,21 +81,26 @@ namespace AutoClicker
 
 					// Hotkey info
 					if (txtHotkey.Text == "None")
-						w.Write(0x0);
+						w.Write(0);
 					else
 						w.Write((int)hotkey);
+
+					// Settings info
+					w.Write(CheckBoxStayOnTop.Checked);
 				}
 			}
 		}
 
 		private void LoadSettings()
 		{
-			if (File.Exists(cfgfile_path))
+			long length = new FileInfo(cfgfile_path).Length;
+			if (File.Exists(cfgfile_path) && length == 52) // hack to prevent reading out of bounds
 			{
 				using (FileStream fs = File.Open(cfgfile_path, FileMode.Open))
 				{
 					using (BinaryReader r = new BinaryReader(fs))
 					{
+						// Read data
 						bool ClickLeft = r.ReadBoolean();
 						bool ClickMiddle = r.ReadBoolean();
 						bool ClickRight = r.ReadBoolean();
@@ -118,6 +124,9 @@ namespace AutoClicker
 
 						hotkey = (Keys)r.ReadInt32();
 
+						bool StayOnTop = r.ReadBoolean();
+
+						// Apply read data
 						rdbClickLeft.Checked = ClickLeft;
 						rdbClickMiddle.Checked = ClickMiddle;
 						rdbClickRight.Checked = ClickRight;
@@ -175,7 +184,7 @@ namespace AutoClicker
 						if (hotkey != Keys.None)
 						{
 							var hotkeyModifiers = hotkey & Keys.Modifiers;
-							hotkeyNodifiers = 0;
+
 							if ((hotkeyModifiers & Keys.Shift) != 0)
 								hotkeyNodifiers |= Win32.FsModifiers.Shift;
 
@@ -187,6 +196,8 @@ namespace AutoClicker
 
 							SetHotkey();
 						}
+
+						CheckBoxStayOnTop.Checked = StayOnTop;
 					}
 				}
 			}
@@ -201,11 +212,16 @@ namespace AutoClicker
 			DelayHandler(null, null);
 			CountHandler(null, null);
 
-			SetEnabled(btnStop, false);
+			btnStop.Enabled = false;
 			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
-				SetEnabled(btnHotkeyRemove, false);
+				btnHotkeyRemove.Enabled = false;
 
 			clicker.Finished += HandleFinished;
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			SaveSettings();
 		}
 
 		private void HandleFinished(object sender, EventArgs e)
@@ -215,10 +231,12 @@ namespace AutoClicker
 
 		private void ClickTypeHandler(object sender, EventArgs e)
 		{
-			bool doubleClick = false;
-			bool leftClick = false;
-			bool middleClick = false;
-			bool rightClick = false;
+			bool doubleClick = false, leftClick = false, middleClick = false, rightClick = false;
+
+			if(!rdbClickLeft.Checked && !rdbClickMiddle.Checked && !rdbClickRight.Checked) // Check if any click types are enabled.
+				btnStart.Enabled = false;
+			else
+				btnStart.Enabled = true;
 
 			if (rdbClickLeft.Checked)
 				leftClick = true;
@@ -238,10 +256,7 @@ namespace AutoClicker
 		private void LocationHandler(object sender, EventArgs e)
 		{
 			AutoClicker.LocationType locationType;
-			int x = -1;
-			int y = -1;
-			int width = -1;
-			int height = -1;
+			int x = -1, y = -1, width = -1, height = -1;
 
 			if (rdbLocationFixed.Checked)
 			{
@@ -270,12 +285,14 @@ namespace AutoClicker
 			{
 				numFixedX.Enabled = true;
 				numFixedY.Enabled = true;
+				btnSelectFixed.Enabled = true;
 			}
 
 			else
 			{
 				numFixedX.Enabled = false;
 				numFixedY.Enabled = false;
+				btnSelectFixed.Enabled = false;
 			}
 
 			if (locationType == AutoClicker.LocationType.RandomRange)
@@ -284,7 +301,7 @@ namespace AutoClicker
 				numRandomY.Enabled = true;
 				numRandomWidth.Enabled = true;
 				numRandomHeight.Enabled = true;
-				btnSelect.Enabled = true;
+				btnSelectRandom.Enabled = true;
 			}
 
 			else
@@ -293,7 +310,7 @@ namespace AutoClicker
 				numRandomY.Enabled = false;
 				numRandomWidth.Enabled = false;
 				numRandomHeight.Enabled = false;
-				btnSelect.Enabled = false;
+				btnSelectRandom.Enabled = false;
 			}
 
 			clicker.UpdateLocation(locationType, x, y, width, height);
@@ -302,8 +319,7 @@ namespace AutoClicker
 		private void DelayHandler(object sender, EventArgs e)
 		{
 			AutoClicker.DelayType delayType;
-			int delay;
-			int delayRange = -1;
+			int delay, delayRange = -1;
 
 			if (rdbDelayFixed.Checked)
 			{
@@ -360,116 +376,19 @@ namespace AutoClicker
 			clicker.UpdateCount(countType, count);
 		}
 
-		private void BtnHotkeyRemove_Click(object sender, EventArgs e)
+		// Wait function
+		public void Wait(int time)
 		{
-			UnsetHotkey();
-		}
-
-		private void BtnStart_Click(object sender, EventArgs e)
-		{
-			clicker.Start();
-			DisableControls();
-		}
-
-		private void BtnStop_Click(object sender, EventArgs e)
-		{
-			clicker.Stop();
-			EnableControls();
-		}
-
-		private void BtnReset_Click(object sender, EventArgs e)
-		{
-			rdbClickLeft.Checked = true;
-			rdbClickMiddle.Checked = false;
-			rdbClickRight.Checked = false;
-			rdbClickDouble.Checked = false;
-
-			rdbLocationMouse.Checked = true;
-			rdbLocationRandom.Checked = false;
-			rdbLocationFixed.Checked = false;
-			rdbLocationRandomArea.Checked = false;
-			numFixedX.Value = 0;
-			numFixedY.Value = 0;
-
-			numRandomX.Value = 0;
-			numRandomY.Value = 0;
-			numRandomWidth.Value = 100;
-			numRandomHeight.Value = 100;
-
-			rdbDelayFixed.Checked = true;
-			rdbDelayRange.Checked = false;
-			numDelayFixed.Value = 100;
-			numDelayRangeMin.Value = 500;
-			numDelayRangeMax.Value = 1000;
-
-			rdbUntilStopped.Checked = true;
-			rdbCount.Checked = false;
-			numCount.Value = 100;
-
-			UnsetHotkey();
-			
-			SaveSettings();
-		}
-
-
-		delegate void SetEnabledCallback(Control Control, bool Enabled);
-		private void SetEnabled(Control Control, bool Enabled)
-		{
-			if (Control.InvokeRequired)
+			Thread thread = new Thread(delegate ()
 			{
-				var d = new SetEnabledCallback(SetEnabled);
-				this.Invoke(d, Control, Enabled);
-			}
-
-			else
-				Control.Enabled = Enabled;
+				Thread.Sleep(time);
+			});
+			thread.Start();
+			while (thread.IsAlive)
+				Application.DoEvents();
 		}
 
-		delegate void SetButtonTextCallback(Button Control, string Text);
-		private void SetButtonText(Button Control, string Text)
-		{
-			if (Control.InvokeRequired)
-			{
-				var d = new SetButtonTextCallback(SetButtonText);
-				this.Invoke(d, Control, Text);
-			}
-
-			else
-				Control.Text = Text;
-		}
-
-		private void DisableControls()
-		{
-			SetEnabled(grpClickType, false);
-			SetEnabled(grpLocation, false);
-			SetEnabled(grpDelay, false);
-			SetEnabled(grpCount, false);
-			SetEnabled(grpSettings, false);
-
-			SetEnabled(txtHotkey, false);
-			SetEnabled(label11, false);
-			SetEnabled(btnHotkeyRemove, false);
-			SetEnabled(btnStart, false);
-			SetEnabled(btnStop, true);
-		}
-
-		private void EnableControls()
-		{
-			SetEnabled(grpClickType, true);
-			SetEnabled(grpLocation, true);
-			SetEnabled(grpDelay, true);
-			SetEnabled(grpCount, true);
-			SetEnabled(grpSettings, true);
-
-			SetEnabled(txtHotkey, true);
-			SetEnabled(label11, true);
-			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
-				SetEnabled(btnHotkeyRemove, false);
-			else SetEnabled(btnHotkeyRemove, true);
-			SetEnabled(btnStart, true);
-			SetEnabled(btnStop, false);
-		}
-
+		// Handles clicking hotkey to enable clicker
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
@@ -482,12 +401,77 @@ namespace AutoClicker
 
 				Win32.FsModifiers modifiers = (Win32.FsModifiers)((int)m.LParam & 0xFFFF);
 				Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
-				if (key == (hotkey & Keys.KeyCode) && modifiers == hotkeyNodifiers)
+				if (key == (hotkey & Keys.KeyCode) && modifiers == hotkeyNodifiers && (rdbClickLeft.Checked || rdbClickMiddle.Checked || rdbClickRight.Checked)) // Check if any click types are enabled.
 					if (!clicker.IsAlive)
 						BtnStart_Click(null, null);
 					else
 						BtnStop_Click(null, null);
 			}
+		}
+
+		// Control Buttons
+		private void BtnStart_Click(object sender, EventArgs e)
+		{	
+			clicker.Start();
+			DisableControls();
+		}
+
+		private void DisableControls()
+		{
+			grpClickType.Enabled = false;
+			grpLocation.Enabled = false;
+			grpDelay.Enabled = false;
+			grpCount.Enabled = false;
+			grpSettings.Enabled = false;
+
+			txtHotkey.Enabled = false;
+			lblHotkey.Enabled = false;
+			btnHotkeyRemove.Enabled = false;
+			btnStart.Enabled = false;
+			btnStop.Enabled = true;
+			btnReset.Text = "Reset";
+		}
+
+		private void BtnStop_Click(object sender, EventArgs e)
+		{
+			clicker.Stop();
+			EnableControls();
+		}
+
+		private void EnableControls()
+		{
+			grpClickType.Enabled = true;
+			grpLocation.Enabled = true;
+			grpDelay.Enabled = true;
+			grpCount.Enabled = true;
+			grpSettings.Enabled = true;
+
+			txtHotkey.Enabled = true;
+			lblHotkey.Enabled = true;
+			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
+				btnHotkeyRemove.Enabled = false;
+			else
+				btnHotkeyRemove.Enabled = true;
+			btnStart.Enabled = true;
+			btnStop.Enabled = false;
+		}
+
+		private void BtnHotkeyRemove_Click(object sender, EventArgs e)
+		{
+			UnsetHotkey();
+			btnHotkeyRemove.Enabled = false;
+		}
+		
+		private void SetHotkey()
+		{
+			txtHotkey.Text = KeysConverter.Convert(hotkey);
+			Win32.RegisterHotKey(Handle, (int)hotkey, (uint)hotkeyNodifiers, (uint)(hotkey & Keys.KeyCode));
+		}
+
+		private void UnsetHotkey()
+		{
+			txtHotkey.Text = "None";
+			Win32.UnregisterHotKey(Handle, (int)hotkey);
 		}
 
 		private void TxtHotkey_KeyDown(object sender, KeyEventArgs e)
@@ -497,10 +481,11 @@ namespace AutoClicker
 			//     Modifiers                                 Asian keys (kana, hanja, kanji etc)       IME related keys (convert etc)           Korean alt (process)  Windows keys
 			if (!((e.KeyValue >= 16 && e.KeyValue <= 18) || (e.KeyValue >= 21 && e.KeyValue <= 25) || (e.KeyValue >= 28 && e.KeyValue <= 31) || e.KeyValue == 229 || (e.KeyValue >= 91 && e.KeyValue <= 92)))
 			{
-				Win32.UnregisterHotKey(this.Handle, (int)hotkey);
+				Win32.UnregisterHotKey(Handle, (int)hotkey);
 				hotkey = e.KeyData;
 				// Extract modifiers
 				hotkeyNodifiers = 0;
+
 				if ((e.Modifiers & Keys.Shift) != 0)
 					hotkeyNodifiers |= Win32.FsModifiers.Shift;
 
@@ -511,27 +496,69 @@ namespace AutoClicker
 					hotkeyNodifiers |= Win32.FsModifiers.Alt;
 
 				SetHotkey();
+				btnHotkeyRemove.Enabled = true;
+				txtHotkey.Parent.Focus();
 			}
 		}
 
-		private void SetHotkey()
+		// Settings Buttons
+		private void CheckBoxStayOnTop_Press(object sender, EventArgs e)
 		{
-			txtHotkey.Text = KeysConverter.Convert(hotkey);
-			Win32.RegisterHotKey(this.Handle, (int)hotkey, (uint)hotkeyNodifiers, (uint)(hotkey & Keys.KeyCode));
-			btnHotkeyRemove.Enabled = true;
-			txtHotkey.Parent.Focus();
+			if (CheckBoxStayOnTop.Checked)
+                TopMost = true;
+
+            else
+				TopMost = false;
 		}
 
-		private void UnsetHotkey()
+		private void BtnReset_Click(object sender, EventArgs e)
 		{
-			txtHotkey.Text = "None";
-			Win32.UnregisterHotKey(this.Handle, (int)hotkey);
-			btnHotkeyRemove.Enabled = false;
-		}
+			if (btnReset.Text == "Sure?")
+			{
+				rdbClickLeft.Checked = true;
+				rdbClickMiddle.Checked = false;
+				rdbClickRight.Checked = false;
+				rdbClickDouble.Checked = false;
 
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+				rdbLocationMouse.Checked = true;
+				numFixedX.Value = 0;
+				numFixedY.Value = 0;
+
+				numRandomX.Value = 0;
+				numRandomY.Value = 0;
+				numRandomWidth.Value = 100;
+				numRandomHeight.Value = 100;
+
+				rdbDelayFixed.Checked = true;
+				numDelayFixed.Value = 100;
+				numDelayRangeMin.Value = 500;
+				numDelayRangeMax.Value = 1000;
+
+				rdbUntilStopped.Checked = true;
+				numCount.Value = 100;
+
+				CheckBoxStayOnTop.Checked = false;
+
+				UnsetHotkey();
+
+				SaveSettings();
+				btnReset.Text = "Reset";
+				return;
+			}
+
+			btnReset.Text = "Sure?";
+			Wait(3000);
+			btnReset.Text = "Reset";
+        }
+
+		// Location Buttons
+		private void BtnSelectRandom_Click(object sender, EventArgs e)
 		{
-			SaveSettings();
+			TopMost = false;
+			grpMain.Enabled = false;
+
+			var form = new SelectionForm(this);
+			form.Show();
 		}
 
 		public void SendRectangle(int X, int Y, int Width, int Height)
@@ -540,12 +567,27 @@ namespace AutoClicker
 			numRandomY.Value = Y;
 			numRandomWidth.Value = Width;
 			numRandomHeight.Value = Height;
+
+			CheckBoxStayOnTop_Press(null, null);
+			grpMain.Enabled = true;
 		}
 
-		private void BtnSelect_Click(object sender, EventArgs e)
+		private void BtnSelectFixed_Click(object sender, EventArgs e)
 		{
-			var form = new SelectionForm(this);
+			TopMost = false;
+			grpMain.Enabled = false;
+
+			var form = new SelectionFormFixed(this);
 			form.Show();
 		}
-	}
+
+		public void SendFixedXY(int X, int Y)
+		{
+			numFixedX.Value = X;
+			numFixedY.Value = Y;
+
+			CheckBoxStayOnTop_Press(null, null);
+			grpMain.Enabled = true;
+		}
+    }
 }

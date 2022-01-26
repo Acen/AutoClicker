@@ -5,22 +5,20 @@ namespace AutoClicker
 {
 	public partial class SelectionForm : Form
 	{
-		public bool LeftButtonDown = false;
-		public bool RectangleDrawn = false;
-		public bool ReadyToDrag = false;
+		public bool ButtonDown;
 
 		public Point ClickPoint = new Point();
 		public Point CurrentTopLeft = new Point();
 		public Point CurrentBottomRight = new Point();
-		public Point DragClickRelative = new Point();
 
 		public int RectangleHeight = new int();
 		public int RectangleWidth = new int();
-        readonly Graphics g;
-        readonly Pen BlackPen = new Pen(Color.Black, 1);
-        readonly Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 1);
+		readonly Graphics g;
+		readonly Pen BlackPen = new Pen(Color.Black, 5);
+		readonly Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 5);
 
-		private MainForm instanceRef = null;
+		private MainForm instanceRef;
+
 		public MainForm InstanceRef
 		{
 			get
@@ -35,49 +33,48 @@ namespace AutoClicker
 
 		public SelectionForm(MainForm instanceRef)
 		{
+			TopMost = true;
 			InitializeComponent();
 			InstanceRef = instanceRef;
-			this.MouseDown += HandleMouseClick;
-			this.MouseMove += HandleMouseMove;
-			this.MouseUp += HandleMouseUp;
+			MouseDown += HandleMouseClick;
+			MouseMove += HandleMouseMove;
+			MouseUp += HandleMouseUp;
 
-			this.Left = 0;
-			this.Top = 0;
+			Left = 0;
+			Top = 0;
 			var width = 0;
 			var height = 0;
 			var screens = Screen.AllScreens;
 			foreach (var screen in screens)
 			{
-				if (screen.Bounds.Height > height)
-					height = screen.Bounds.Height;
-
-				width += screen.Bounds.Width;
+				height = screen.Bounds.Height;
+				width = screen.Bounds.Width;
 			}
 
-			this.Width = width;
-			this.Height = height;
+			Width = width;
+			Height = height;
 
-			g = this.CreateGraphics();
+			g = CreateGraphics();
 		}
 
 		private void HandleMouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons)
 			{
 				ClickPoint = new Point(MousePosition.X, MousePosition.Y);
-				LeftButtonDown = true;
+				ButtonDown = true;
 			}
 		}
 
 		private void HandleMouseUp(object sender, MouseEventArgs e)
 		{
 			instanceRef.SendRectangle(CurrentTopLeft.X, CurrentTopLeft.Y, CurrentBottomRight.X - CurrentTopLeft.X, CurrentBottomRight.Y - CurrentTopLeft.Y);
-			this.Close();
+			Close();
 		}
 
 		private void HandleMouseMove(object sender, MouseEventArgs e)
 		{
-			if (LeftButtonDown)
+			if (ButtonDown)
 				DrawSelection();
 		}
 
@@ -112,6 +109,64 @@ namespace AutoClicker
 
 			//Draw a new rectangle
 			g.DrawRectangle(BlackPen, CurrentTopLeft.X, CurrentTopLeft.Y, CurrentBottomRight.X - CurrentTopLeft.X, CurrentBottomRight.Y - CurrentTopLeft.Y);
+		}
+	}
+
+	public partial class SelectionFormFixed : Form
+	{
+		public bool ButtonDown;
+		public Point ClickPointFixed = new Point();
+
+		private MainForm instanceRef;
+
+		public MainForm InstanceRef
+		{
+			get
+			{
+				return instanceRef;
+			}
+			set
+			{
+				instanceRef = value;
+			}
+		}
+
+		public SelectionFormFixed(MainForm instanceRef)
+		{
+			TopMost = true;
+			InitializeComponent();
+			InstanceRef = instanceRef;
+			MouseDown += HandleMouseClick;
+			MouseUp += HandleMouseUp;
+
+			Left = 0;
+			Top = 0;
+			var width = 0;
+			var height = 0;
+			var screens = Screen.AllScreens;
+			foreach (var screen in screens)
+			{
+				height = screen.Bounds.Height;
+				width = screen.Bounds.Width;
+			}
+
+			Width = width;
+			Height = height;
+		}
+
+        private void HandleMouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons)
+			{
+				ClickPointFixed = new Point(MousePosition.X, MousePosition.Y);
+				ButtonDown = true;
+			}
+		}
+
+		private void HandleMouseUp(object sender, MouseEventArgs e)
+		{
+			instanceRef.SendFixedXY(MousePosition.X, MousePosition.Y);
+			Close();
 		}
 	}
 }
