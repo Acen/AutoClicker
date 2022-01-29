@@ -53,30 +53,6 @@ namespace AutoClicker
 		private int count;
 		#endregion
 
-		#region "Update storage"
-		private bool buttonUpdated;
-		private bool tmpLeftClick;
-		private bool tmpMiddleClick;
-		private bool tmpRightClick;
-		private bool tmpDoubleClick;
-
-		private bool locationUpdated;
-		private LocationType tmpLocationType;
-		private int tmpX;
-		private int tmpY;
-		private int tmpWidth;
-		private int tmpHeight;
-
-		private bool delayUpdated;
-		private DelayType tmpDelayType;
-		private int tmpDelay;
-		private int tmpDelayRange;
-
-		private bool countUpdated;
-		private CountType tmpCountType;
-		private int tmpCount;
-		#endregion
-
 		Thread Clicker;
         readonly Random rnd;
 
@@ -97,14 +73,14 @@ namespace AutoClicker
 		private void Click()
 		{
 			//System.Diagnostics.Debug.Print("Click() started");
-			SyncSettings();
+			
 			int remaining = count;
 			//System.Diagnostics.Debug.Print("Count type: {0}, count: {1}", countType, count);
 			while (countType == CountType.UntilStopped || remaining > 0)
 			{
 				if (!IsAlive)
 					return;
-				SyncSettings();
+				
 				List<Win32.INPUT> inputs = new List<Win32.INPUT>();
 
 				// Move the mouse if required.
@@ -278,84 +254,34 @@ namespace AutoClicker
 				Clicker.Abort();
 		}
 
-		private void SyncSettings()
+		public void UpdateButton(bool tmpLeftClick, bool tmpMiddleClick, bool tmpRightClick, bool tmpDoubleClick)
 		{
-			if (buttonUpdated)
-			{
-				leftClick = tmpLeftClick;
-				middleClick = tmpMiddleClick;
-				rightClick = tmpRightClick;
-				doubleClick = tmpDoubleClick;
-
-				buttonUpdated = false;
-			}
-
-			if (locationUpdated)
-			{
-				locationType = tmpLocationType;
-				x = tmpX;
-				y = tmpY;
-				width = tmpWidth;
-				height = tmpHeight;
-
-				locationUpdated = false;
-			}
-
-			if (delayUpdated)
-			{
-				delayType = tmpDelayType;
-				delay = tmpDelay;
-				delayRange = tmpDelayRange;
-
-				delayUpdated = false;
-			}
-
-			if (countUpdated)
-			{
-				countType = tmpCountType;
-				count = tmpCount;
-
-				countUpdated = false;
-			}
-			//System.Diagnostics.Debug.Print("Settings synced");
+			leftClick = tmpLeftClick;
+			middleClick = tmpMiddleClick;
+			rightClick = tmpRightClick;
+			doubleClick = tmpDoubleClick;
 		}
 
-		public void UpdateButton(bool LeftClick, bool MiddleClick, bool RightClick, bool DoubleClick)
+		public void UpdateLocation(LocationType tmpLocationType, int tmpX, int tmpY, int tmpWidth, int tmpHeight)
 		{
-			tmpLeftClick = LeftClick;
-			tmpMiddleClick = MiddleClick;
-			tmpRightClick = RightClick;
-			tmpDoubleClick = DoubleClick;
-
-			buttonUpdated = true;
+			locationType = tmpLocationType;
+			x = tmpX;
+			y = tmpY;
+			width = tmpWidth;
+			height = tmpHeight;
 		}
 
-		public void UpdateLocation(LocationType LocationType, int X, int Y, int Width, int Height)
+		public void UpdateDelay(DelayType tmpDelayType, int tmpDelay, int tmpDelayRange)
 		{
-			tmpLocationType = LocationType;
-			tmpX = X;
-			tmpY = Y;
-			tmpWidth = Width;
-			tmpHeight = Height;
-
-			locationUpdated = true;
+			delayType = tmpDelayType;
+			delay = tmpDelay;
+			delayRange = tmpDelayRange;
 		}
 
-		public void UpdateDelay(DelayType DelayType, int Delay, int DelayRange)
+		public void UpdateCount(CountType tmpCountType, int tmpCount)
 		{
-			tmpDelayType = DelayType;
-			tmpDelay = Delay;
-			tmpDelayRange = DelayRange;
-
-			delayUpdated = true;
-		}
-
-		public void UpdateCount(CountType CountType, int Count)
-		{
-			tmpCountType = CountType;
-			tmpCount = Count;
-
-			countUpdated = true;
+			countType = tmpCountType;
+			count = tmpCount;
 		}
 	}
 }

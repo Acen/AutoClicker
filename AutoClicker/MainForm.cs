@@ -93,8 +93,7 @@ namespace AutoClicker
 
 		private void LoadSettings()
 		{
-			long length = new FileInfo(cfgfile_path).Length;
-			if (File.Exists(cfgfile_path) && length == 52) // hack to prevent reading out of bounds
+			if (File.Exists(cfgfile_path) && new FileInfo(cfgfile_path).Length == 52) // hack to prevent reading out of bounds
 			{
 				using (FileStream fs = File.Open(cfgfile_path, FileMode.Open))
 				{
@@ -231,72 +230,76 @@ namespace AutoClicker
 
 		private void ClickTypeHandler(object sender, EventArgs e)
 		{
-			bool doubleClick = false, leftClick = false, middleClick = false, rightClick = false;
+			bool tmpDoubleClick = false, tmpLeftClick = false, tmpMiddleClick = false, tmpRightClick = false;
 
-			if(!rdbClickLeft.Checked && !rdbClickMiddle.Checked && !rdbClickRight.Checked) // Check if any click types are enabled.
+			// Click Type
+
+			if (!rdbClickLeft.Checked && !rdbClickMiddle.Checked && !rdbClickRight.Checked) // Check if any click types are enabled.
 				btnStart.Enabled = false;
 			else
 				btnStart.Enabled = true;
 
 			if (rdbClickLeft.Checked)
-				leftClick = true;
+				tmpLeftClick = true;
 
 			if (rdbClickMiddle.Checked)
-				middleClick = true;
+				tmpMiddleClick = true;
 
 			if (rdbClickRight.Checked)
-				rightClick = true;
+				tmpRightClick = true;
 
 			if (rdbClickDouble.Checked)
-				doubleClick = true;
+				tmpDoubleClick = true;
 
-			clicker.UpdateButton(leftClick, middleClick, rightClick, doubleClick);
+			clicker.UpdateButton(tmpLeftClick, tmpMiddleClick, tmpRightClick, tmpDoubleClick);
 		}
 
 		private void LocationHandler(object sender, EventArgs e)
 		{
-			AutoClicker.LocationType locationType;
-			int x = -1, y = -1, width = -1, height = -1;
+			AutoClicker.LocationType tmpLocationType;
+			int tmpX = -1, tmpY = -1, tmpWidth = -1, tmpHeight = -1;
 
-			if (rdbLocationFixed.Checked)
-			{
-				locationType = AutoClicker.LocationType.Fixed;
-				x = (int)numFixedX.Value;
-				y = (int)numFixedY.Value;
-			}
+			// Location Type
 
-			else if (rdbLocationMouse.Checked)
-				locationType = AutoClicker.LocationType.Cursor;
+			numFixedX.Enabled = false;
+			numFixedY.Enabled = false;
+			btnSelectFixed.Enabled = false;
+
+			numRandomX.Enabled = false;
+			numRandomY.Enabled = false;
+			numRandomWidth.Enabled = false;
+			numRandomHeight.Enabled = false;
+			btnSelectRandom.Enabled = false;
+
+			if (rdbLocationMouse.Checked)
+			// Mouse location
+				tmpLocationType = AutoClicker.LocationType.Cursor;
 
 			else if (rdbLocationRandom.Checked)
-				locationType = AutoClicker.LocationType.Random;
+			// Random on screen
+				tmpLocationType = AutoClicker.LocationType.Random;
 
-			else
+			else if (rdbLocationFixed.Checked)
+			// Fixed Location
 			{
-				locationType = AutoClicker.LocationType.RandomRange;
-				x = (int)numRandomX.Value;
-				y = (int)numRandomY.Value;
-				width = (int)numRandomWidth.Value;
-				height = (int)numRandomHeight.Value;
-			}
+				tmpLocationType = AutoClicker.LocationType.Fixed;
+				tmpX = (int)numFixedX.Value;
+				tmpY = (int)numFixedY.Value;
 
-			// Toggle visibility of controls.
-			if (locationType == AutoClicker.LocationType.Fixed)
-			{
 				numFixedX.Enabled = true;
 				numFixedY.Enabled = true;
 				btnSelectFixed.Enabled = true;
 			}
 
 			else
+			// Random area
 			{
-				numFixedX.Enabled = false;
-				numFixedY.Enabled = false;
-				btnSelectFixed.Enabled = false;
-			}
+				tmpLocationType = AutoClicker.LocationType.RandomRange;
+				tmpX = (int)numRandomX.Value;
+				tmpY = (int)numRandomY.Value;
+				tmpWidth = (int)numRandomWidth.Value;
+				tmpHeight = (int)numRandomHeight.Value;
 
-			if (locationType == AutoClicker.LocationType.RandomRange)
-			{
 				numRandomX.Enabled = true;
 				numRandomY.Enabled = true;
 				numRandomWidth.Enabled = true;
@@ -304,76 +307,66 @@ namespace AutoClicker
 				btnSelectRandom.Enabled = true;
 			}
 
-			else
-			{
-				numRandomX.Enabled = false;
-				numRandomY.Enabled = false;
-				numRandomWidth.Enabled = false;
-				numRandomHeight.Enabled = false;
-				btnSelectRandom.Enabled = false;
-			}
-
-			clicker.UpdateLocation(locationType, x, y, width, height);
+			clicker.UpdateLocation(tmpLocationType, tmpX, tmpY, tmpWidth, tmpHeight);
 		}
 
 		private void DelayHandler(object sender, EventArgs e)
 		{
-			AutoClicker.DelayType delayType;
-			int delay, delayRange = -1;
+			AutoClicker.DelayType tmpDelayType;
+			int tmpDelay, tmpDelayRange = -1;
+
+			// Delay Type
+
+			numDelayFixed.Enabled = false;
+			numDelayRangeMax.Enabled = false;
+			numDelayRangeMin.Enabled = false;
 
 			if (rdbDelayFixed.Checked)
+			// Fixed Delay
 			{
-				delayType = AutoClicker.DelayType.Fixed;
-				delay = (int)numDelayFixed.Value;
-			}
+				tmpDelayType = AutoClicker.DelayType.Fixed;
+				tmpDelay = (int)numDelayFixed.Value;
 
-			else
-			{
-				delayType = AutoClicker.DelayType.Range;
-				delay = (int)numDelayRangeMin.Value;
-				delayRange = (int)numDelayRangeMax.Value;
-			}
-
-			// Toggle visibility of controls.
-			if (delayType == AutoClicker.DelayType.Fixed)
-			{
 				numDelayFixed.Enabled = true;
-				numDelayRangeMax.Enabled = false;
-				numDelayRangeMin.Enabled = false;
 			}
 
 			else
+			// Delay Range
 			{
-				numDelayFixed.Enabled = false;
+				tmpDelayType = AutoClicker.DelayType.Range;
+				tmpDelay = (int)numDelayRangeMin.Value;
+				tmpDelayRange = (int)numDelayRangeMax.Value;
+
 				numDelayRangeMax.Enabled = true;
 				numDelayRangeMin.Enabled = true;
 			}
 
-			clicker.UpdateDelay(delayType, delay, delayRange);
+			clicker.UpdateDelay(tmpDelayType, tmpDelay, tmpDelayRange);
 		}
 
 		private void CountHandler(object sender, EventArgs e)
 		{
-			AutoClicker.CountType countType;
-			int count = -1;
+			AutoClicker.CountType tmpCountType;
+			int tmpCount = -1;
 
-			if (rdbCount.Checked)
+			// Count Type
+
+			numCount.Enabled = false;
+
+			if (rdbUntilStopped.Checked)
+			// Until Stopped
+				tmpCountType = AutoClicker.CountType.UntilStopped;
+
+			else
+			// Fixed Number
 			{
-				countType = AutoClicker.CountType.Fixed;
-				count = (int)numCount.Value;
+				tmpCountType = AutoClicker.CountType.Fixed;
+				tmpCount = (int)numCount.Value;
+
+				numCount.Enabled = true;
 			}
 
-			else
-				countType = AutoClicker.CountType.UntilStopped;
-
-			// Toggle visibility of controls.
-			if (countType == AutoClicker.CountType.Fixed)
-				numCount.Enabled = true;
-
-			else
-				numCount.Enabled = false;
-
-			clicker.UpdateCount(countType, count);
+			clicker.UpdateCount(tmpCountType, tmpCount);
 		}
 
 		// Wait function
