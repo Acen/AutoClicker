@@ -40,30 +40,19 @@ namespace AutoClicker
 			MouseMove += HandleMouseMove;
 			MouseUp += HandleMouseUp;
 
-			Left = 0;
-			Top = 0;
-			var width = 0;
-			var height = 0;
-			var screens = Screen.AllScreens;
-			foreach (var screen in screens)
+			foreach (var screen in Screen.AllScreens)
 			{
-				height = screen.Bounds.Height;
-				width = screen.Bounds.Width;
+				Width = screen.Bounds.Width;
+				Height = screen.Bounds.Height;
 			}
-
-			Width = width;
-			Height = height;
 
 			g = CreateGraphics();
 		}
 
 		private void HandleMouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons)
-			{
-				ClickPoint = new Point(MousePosition.X, MousePosition.Y);
-				ButtonDown = true;
-			}
+			ClickPoint = new Point(MousePosition.X, MousePosition.Y);
+			ButtonDown = true;
 		}
 
 		private void HandleMouseUp(object sender, MouseEventArgs e)
@@ -114,7 +103,6 @@ namespace AutoClicker
 
 	public partial class SelectionFormFixed : Form
 	{
-		public bool ButtonDown;
 		public Point ClickPointFixed = new Point();
 
 		private MainForm instanceRef;
@@ -136,35 +124,19 @@ namespace AutoClicker
 			TopMost = true;
 			InitializeComponent();
 			InstanceRef = instanceRef;
-			MouseDown += HandleMouseClick;
 			MouseUp += HandleMouseUp;
 
-			Left = 0;
-			Top = 0;
-			var width = 0;
-			var height = 0;
-			var screens = Screen.AllScreens;
-			foreach (var screen in screens)
+			foreach (var screen in Screen.AllScreens)
 			{
-				height = screen.Bounds.Height;
-				width = screen.Bounds.Width;
-			}
-
-			Width = width;
-			Height = height;
-		}
-
-        private void HandleMouseClick(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons)
-			{
-				ClickPointFixed = new Point(MousePosition.X, MousePosition.Y);
-				ButtonDown = true;
+				Width = screen.Bounds.Width;
+				Height = screen.Bounds.Height;
 			}
 		}
 
 		private void HandleMouseUp(object sender, MouseEventArgs e)
 		{
+			ClickPointFixed = new Point(MousePosition.X, MousePosition.Y);
+
 			instanceRef.SendFixedXY(MousePosition.X, MousePosition.Y);
 			Close();
 		}

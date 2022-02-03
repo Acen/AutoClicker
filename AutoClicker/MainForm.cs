@@ -202,7 +202,7 @@ namespace AutoClicker
 			}
 		}
 
-		private void Form1_Load(object sender, EventArgs e)
+		private void MainForm_Load(object sender, EventArgs e)
 		{
 			clicker = new AutoClicker();
 			LoadSettings();
@@ -261,25 +261,7 @@ namespace AutoClicker
 
 			// Location Type
 
-			numFixedX.Enabled = false;
-			numFixedY.Enabled = false;
-			btnSelectFixed.Enabled = false;
-
-			numRandomX.Enabled = false;
-			numRandomY.Enabled = false;
-			numRandomWidth.Enabled = false;
-			numRandomHeight.Enabled = false;
-			btnSelectRandom.Enabled = false;
-
-			if (rdbLocationMouse.Checked)
-			// Mouse location
-				tmpLocationType = AutoClicker.LocationType.Cursor;
-
-			else if (rdbLocationRandom.Checked)
-			// Random on screen
-				tmpLocationType = AutoClicker.LocationType.Random;
-
-			else if (rdbLocationFixed.Checked)
+			if (rdbLocationFixed.Checked)
 			// Fixed Location
 			{
 				tmpLocationType = AutoClicker.LocationType.Fixed;
@@ -289,9 +271,15 @@ namespace AutoClicker
 				numFixedX.Enabled = true;
 				numFixedY.Enabled = true;
 				btnSelectFixed.Enabled = true;
+
+				numRandomX.Enabled = false;
+				numRandomY.Enabled = false;
+				numRandomWidth.Enabled = false;
+				numRandomHeight.Enabled = false;
+				btnSelectRandom.Enabled = false;
 			}
 
-			else
+			else if (rdbLocationRandomArea.Checked)
 			// Random area
 			{
 				tmpLocationType = AutoClicker.LocationType.RandomRange;
@@ -300,11 +288,37 @@ namespace AutoClicker
 				tmpWidth = (int)numRandomWidth.Value;
 				tmpHeight = (int)numRandomHeight.Value;
 
+				numFixedX.Enabled = false;
+				numFixedY.Enabled = false;
+				btnSelectFixed.Enabled = false;
+
 				numRandomX.Enabled = true;
 				numRandomY.Enabled = true;
 				numRandomWidth.Enabled = true;
 				numRandomHeight.Enabled = true;
 				btnSelectRandom.Enabled = true;
+			}
+
+			else
+            // Mouse location / Random on screen
+            {
+				numFixedX.Enabled = false;
+				numFixedY.Enabled = false;
+				btnSelectFixed.Enabled = false;
+
+				numRandomX.Enabled = false;
+				numRandomY.Enabled = false;
+				numRandomWidth.Enabled = false;
+				numRandomHeight.Enabled = false;
+				btnSelectRandom.Enabled = false;
+
+				if (rdbLocationMouse.Checked)
+				// Mouse location
+					tmpLocationType = AutoClicker.LocationType.Cursor;
+
+				else
+				// Random on screen
+					tmpLocationType = AutoClicker.LocationType.Random;
 			}
 
 			clicker.UpdateLocation(tmpLocationType, tmpX, tmpY, tmpWidth, tmpHeight);
@@ -317,10 +331,6 @@ namespace AutoClicker
 
 			// Delay Type
 
-			numDelayFixed.Enabled = false;
-			numDelayRangeMax.Enabled = false;
-			numDelayRangeMin.Enabled = false;
-
 			if (rdbDelayFixed.Checked)
 			// Fixed Delay
 			{
@@ -328,6 +338,8 @@ namespace AutoClicker
 				tmpDelay = (int)numDelayFixed.Value;
 
 				numDelayFixed.Enabled = true;
+				numDelayRangeMax.Enabled = false;
+				numDelayRangeMin.Enabled = false;
 			}
 
 			else
@@ -337,6 +349,7 @@ namespace AutoClicker
 				tmpDelay = (int)numDelayRangeMin.Value;
 				tmpDelayRange = (int)numDelayRangeMax.Value;
 
+				numDelayFixed.Enabled = false;
 				numDelayRangeMax.Enabled = true;
 				numDelayRangeMin.Enabled = true;
 			}
@@ -351,11 +364,13 @@ namespace AutoClicker
 
 			// Count Type
 
-			numCount.Enabled = false;
-
 			if (rdbUntilStopped.Checked)
 			// Until Stopped
+			{
 				tmpCountType = AutoClicker.CountType.UntilStopped;
+
+				numCount.Enabled = false;
+			}
 
 			else
 			// Fixed Number
@@ -365,6 +380,11 @@ namespace AutoClicker
 
 				numCount.Enabled = true;
 			}
+
+			if (numCount.Value == 1)
+				lblCountClicks.Text = "click";
+			else
+				lblCountClicks.Text = "clicks";
 
 			clicker.UpdateCount(tmpCountType, tmpCount);
 		}
@@ -428,6 +448,7 @@ namespace AutoClicker
 		private void BtnStop_Click(object sender, EventArgs e)
 		{
 			clicker.Stop();
+			grpMain.Focus();
 			EnableControls();
 		}
 
@@ -464,6 +485,7 @@ namespace AutoClicker
 		private void UnsetHotkey()
 		{
 			txtHotkey.Text = "None";
+			grpMain.Focus();
 			Win32.UnregisterHotKey(Handle, (int)hotkey);
 		}
 
@@ -490,7 +512,7 @@ namespace AutoClicker
 
 				SetHotkey();
 				btnHotkeyRemove.Enabled = true;
-				txtHotkey.Parent.Focus();
+				grpMain.Focus();
 			}
 		}
 
@@ -540,6 +562,7 @@ namespace AutoClicker
 			}
 
 			btnReset.Text = "Sure?";
+			grpMain.Focus();
 			Wait(3000);
 			btnReset.Text = "Reset";
         }
@@ -563,6 +586,7 @@ namespace AutoClicker
 
 			CheckBoxStayOnTop_Press(null, null);
 			grpMain.Enabled = true;
+			grpMain.Focus();
 		}
 
 		private void BtnSelectFixed_Click(object sender, EventArgs e)
@@ -581,6 +605,7 @@ namespace AutoClicker
 
 			CheckBoxStayOnTop_Press(null, null);
 			grpMain.Enabled = true;
+			grpMain.Focus();
 		}
     }
 }

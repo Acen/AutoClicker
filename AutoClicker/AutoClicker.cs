@@ -54,12 +54,7 @@ namespace AutoClicker
 		#endregion
 
 		Thread Clicker;
-        readonly Random rnd;
-
-		public AutoClicker()
-		{
-			rnd = new Random();
-		}
+        readonly Random rnd = new Random();
 
 		public class NextClickEventArgs : EventArgs
 		{
@@ -88,7 +83,6 @@ namespace AutoClicker
 				{
 					Win32.INPUT input = new Win32.INPUT
 					{
-						type = Win32.SendInputEventType.InputMouse,
 						mi = new Win32.MOUSEINPUT
 						{
 							dx = Win32.CalculateAbsoluteCoordinateX(x),
@@ -103,7 +97,6 @@ namespace AutoClicker
 				{
 					Win32.INPUT input = new Win32.INPUT
 					{
-						type = Win32.SendInputEventType.InputMouse,
 						mi = new Win32.MOUSEINPUT
 						{
 							dx = rnd.Next(65536),
@@ -118,7 +111,6 @@ namespace AutoClicker
 				{
 					Win32.INPUT input = new Win32.INPUT
 					{
-						type = Win32.SendInputEventType.InputMouse,
 						mi = new Win32.MOUSEINPUT
 						{
 							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(x, x + width)),
@@ -139,76 +131,42 @@ namespace AutoClicker
 
 					if (leftClick)
 					{
-						Win32.INPUT inputDown = new Win32.INPUT
+						Win32.INPUT leftclick = new Win32.INPUT
 						{
-							type = Win32.SendInputEventType.InputMouse,
 							mi = new Win32.MOUSEINPUT
 							{
-								dwFlags = Win32.MouseEventFlags.LeftDown
+								dwFlags = Win32.MouseEventFlags.LeftDown | Win32.MouseEventFlags.LeftUp
 							}
 						};
-						inputs.Add(inputDown);
-						Win32.INPUT inputUp = new Win32.INPUT
-						{
-							type = Win32.SendInputEventType.InputMouse,
-							mi = new Win32.MOUSEINPUT
-							{
-								dwFlags = Win32.MouseEventFlags.LeftUp
-							}
-						};
-						inputs.Add(inputUp);
+						inputs.Add(leftclick);
 					}
 
 					if (middleClick)
 					{
-						Win32.INPUT inputDown = new Win32.INPUT
+						Win32.INPUT middleclick = new Win32.INPUT
 						{
-							type = Win32.SendInputEventType.InputMouse,
 							mi = new Win32.MOUSEINPUT
 							{
-								dwFlags = Win32.MouseEventFlags.MiddleDown
+								dwFlags = Win32.MouseEventFlags.MiddleDown | Win32.MouseEventFlags.MiddleUp
 							}
 						};
-						inputs.Add(inputDown);
-						Win32.INPUT inputUp = new Win32.INPUT
-						{
-							type = Win32.SendInputEventType.InputMouse,
-							mi = new Win32.MOUSEINPUT
-							{
-								dwFlags = Win32.MouseEventFlags.MiddleUp
-							}
-						};
-						inputs.Add(inputUp);
+						inputs.Add(middleclick);
 					}
 
 					if (rightClick)
 					{
-						Win32.INPUT inputDown = new Win32.INPUT
+						Win32.INPUT rightclick = new Win32.INPUT
 						{
-							type = Win32.SendInputEventType.InputMouse,
 							mi = new Win32.MOUSEINPUT
 							{
-								dwFlags = Win32.MouseEventFlags.RightDown
+								dwFlags = Win32.MouseEventFlags.RightDown | Win32.MouseEventFlags.RightUp
 							}
 						};
-						inputs.Add(inputDown);
-						Win32.INPUT inputUp = new Win32.INPUT
-						{
-							type = Win32.SendInputEventType.InputMouse,
-							mi = new Win32.MOUSEINPUT
-							{
-								dwFlags = Win32.MouseEventFlags.RightUp
-							}
-						};
-						inputs.Add(inputUp);
+						inputs.Add(rightclick);
 					}
 				}
 				//System.Diagnostics.Debug.Print("Click commands added");
 
-				//INPUT[] input = new INPUT[2];
-				//input[0].mi.dwFlags = Win32.MOUSEEVENTF_LEFTDOWN;
-				//input[1].mi.dwFlags = Win32.MOUSEEVENTF_LEFTUP;
-				//Win32.SendInput(2, input, Marshal.SizeOf(input[0]));
 				Win32.SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf(new Win32.INPUT()));
                 //System.Diagnostics.Debug.Print("Command sent");
 
