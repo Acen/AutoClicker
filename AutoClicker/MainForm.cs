@@ -2,6 +2,9 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Threading;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace AutoClicker
 {
@@ -10,6 +13,9 @@ namespace AutoClicker
 		private AutoClicker clicker;
 		private Keys hotkey;
 		private Win32.FsModifiers hotkeyNodifiers;
+
+		List<Control> objects;
+		List<Control> text;
 
 		// Have settings stored in appdata instead of next to the executable
 		static readonly string appdata_path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -32,11 +38,8 @@ namespace AutoClicker
 				{
 					// Button type
 					w.Write(rdbClickLeft.Checked);
-
 					w.Write(rdbClickMiddle.Checked);
-
 					w.Write(rdbClickRight.Checked);
-
 					w.Write(rdbClickDouble.Checked);
 
 					// Location info
@@ -87,51 +90,27 @@ namespace AutoClicker
 
 					// Settings info
 					w.Write(CheckBoxStayOnTop.Checked);
+					w.Write(CheckBoxDarkMode.Checked);
 				}
 			}
 		}
 
 		private void LoadSettings()
 		{
-			if (File.Exists(cfgfile_path) && new FileInfo(cfgfile_path).Length == 52) // hack to prevent reading out of bounds
+			if (File.Exists(cfgfile_path) && new FileInfo(cfgfile_path).Length == 53) // hack to prevent reading out of bounds
 			{
 				using (FileStream fs = File.Open(cfgfile_path, FileMode.Open))
 				{
 					using (BinaryReader r = new BinaryReader(fs))
 					{
-						// Read data
-						bool ClickLeft = r.ReadBoolean();
-						bool ClickMiddle = r.ReadBoolean();
-						bool ClickRight = r.ReadBoolean();
-						bool ClickDouble = r.ReadBoolean();
+						// Button type
+						rdbClickLeft.Checked = r.ReadBoolean();
+						rdbClickMiddle.Checked = r.ReadBoolean();
+						rdbClickRight.Checked = r.ReadBoolean();
+						rdbClickDouble.Checked = r.ReadBoolean();
 
-						byte locationType = r.ReadByte();
-						int fixedX = r.ReadInt32();
-						int fixedY = r.ReadInt32();
-						int randomX = r.ReadInt32();
-						int randomY = r.ReadInt32();
-						int randomWidth = r.ReadInt32();
-						int randomHeight = r.ReadInt32();
-
-						byte delayType = r.ReadByte();
-						int fixedDelay = r.ReadInt32();
-						int rangeDelayMin = r.ReadInt32();
-						int rangeDelayMax = r.ReadInt32();
-
-						byte countType = r.ReadByte();
-						int count = r.ReadInt32();
-
-						hotkey = (Keys)r.ReadInt32();
-
-						bool StayOnTop = r.ReadBoolean();
-
-						// Apply read data
-						rdbClickLeft.Checked = ClickLeft;
-						rdbClickMiddle.Checked = ClickMiddle;
-						rdbClickRight.Checked = ClickRight;
-						rdbClickDouble.Checked = ClickDouble;
-
-						switch (locationType)
+						// Location info
+						switch (r.ReadByte())
 						{
 							case 1:
 								rdbLocationMouse.Checked = true;
@@ -147,14 +126,15 @@ namespace AutoClicker
 								break;
 						}
 
-						numFixedX.Value = fixedX;
-						numFixedY.Value = fixedY;
-						numRandomX.Value = randomX;
-						numRandomY.Value = randomY;
-						numRandomWidth.Value = randomWidth;
-						numRandomHeight.Value = randomHeight;
+						numFixedX.Value = r.ReadInt32();
+						numFixedY.Value = r.ReadInt32();
+						numRandomX.Value = r.ReadInt32();
+						numRandomY.Value = r.ReadInt32();
+						numRandomWidth.Value = r.ReadInt32();
+						numRandomHeight.Value = r.ReadInt32();
 
-						switch (delayType)
+						// Delay info
+						switch (r.ReadByte())
 						{
 							case 1:
 								rdbDelayFixed.Checked = true;
@@ -164,11 +144,12 @@ namespace AutoClicker
 								break;
 						}
 
-						numDelayFixed.Value = fixedDelay;
-						numDelayRangeMin.Value = rangeDelayMin;
-						numDelayRangeMax.Value = rangeDelayMax;
+						numDelayFixed.Value = r.ReadInt32();
+						numDelayRangeMin.Value = r.ReadInt32();
+						numDelayRangeMax.Value = r.ReadInt32();
 
-						switch (countType)
+						// Count info
+						switch (r.ReadByte())
 						{
 							case 1:
 								rdbUntilStopped.Checked = true;
@@ -178,7 +159,10 @@ namespace AutoClicker
 								break;
 						}
 
-						numCount.Value = count;
+						numCount.Value = r.ReadInt32();
+
+						// Hotkey info
+						hotkey = (Keys)r.ReadInt32();
 
 						if (hotkey != Keys.None)
 						{
@@ -196,7 +180,9 @@ namespace AutoClicker
 							SetHotkey();
 						}
 
-						CheckBoxStayOnTop.Checked = StayOnTop;
+						// Settings info
+						CheckBoxStayOnTop.Checked = r.ReadBoolean();
+						CheckBoxDarkMode.Checked = r.ReadBoolean();
 					}
 				}
 			}
@@ -205,6 +191,8 @@ namespace AutoClicker
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			clicker = new AutoClicker();
+			ListThemedObjects();
+
 			LoadSettings();
 			ClickTypeHandler(null, null);
 			LocationHandler(null, null);
@@ -517,6 +505,82 @@ namespace AutoClicker
 		}
 
 		// Settings Buttons
+		[DllImport("DwmApi")]
+		private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue);
+
+		private void ListThemedObjects()
+		{
+			// TODO: check if you can just add based off of object type instead of individual listing
+
+			objects = new List<Control>
+			{
+				// Numeric Up/Down
+				numFixedX,
+				numFixedY,
+				numRandomX,
+				numRandomY,
+				numRandomWidth,
+				numRandomHeight,
+				numCount,
+				numDelayFixed,
+				numDelayRangeMin,
+				numDelayRangeMax,
+
+				// Controls
+				txtHotkey
+			};
+			text = new List<Control>
+			{
+				// Groups
+				// TODO: check if you can just add based off of object type instead of individual listing
+				grpMain,
+				grpLocation,
+				grpCount,
+				grpControls,
+				grpClickType,
+				grpSettings,
+				grpDelay
+			};
+		}
+
+		private void CheckBoxDarkMode_Press(object sender, EventArgs e)
+		{
+			Color FormColor;
+			Color TextBoxColor;
+			Color TextColor;
+
+			if (CheckBoxDarkMode.Checked)
+			{
+				DwmSetWindowAttribute(Handle, 20, new[] { 1 });
+
+				FormColor = Color.FromArgb(25, 25, 25);
+				TextBoxColor = Color.FromArgb(51, 51, 51);
+				TextColor = Color.FromKnownColor(KnownColor.ControlLight);
+			}
+
+			else
+			{
+				DwmSetWindowAttribute(Handle, 20, new[] { 0 });
+
+				FormColor = Color.FromKnownColor(KnownColor.Control);
+				TextBoxColor = Color.FromKnownColor(KnownColor.Control);
+				TextColor = Color.FromKnownColor(KnownColor.ControlText);
+			}
+
+			BackColor = FormColor;
+
+			foreach (Control item in objects)
+			{
+				item.BackColor = TextBoxColor;
+				item.ForeColor = TextColor;
+			}
+
+			foreach (Control item in text)
+			{
+				item.ForeColor = TextColor;
+			}
+		}
+
 		private void CheckBoxStayOnTop_Press(object sender, EventArgs e)
 		{
 			if (CheckBoxStayOnTop.Checked)
@@ -551,10 +615,6 @@ namespace AutoClicker
 
 				rdbUntilStopped.Checked = true;
 				numCount.Value = 100;
-
-				CheckBoxStayOnTop.Checked = false;
-
-				UnsetHotkey();
 
 				SaveSettings();
 				btnReset.Text = "Reset";

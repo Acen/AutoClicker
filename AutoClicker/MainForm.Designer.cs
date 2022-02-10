@@ -13,6 +13,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpMain = new System.Windows.Forms.GroupBox();
             this.grpSettings = new System.Windows.Forms.GroupBox();
+            this.CheckBoxDarkMode = new System.Windows.Forms.CheckBox();
             this.CheckBoxStayOnTop = new System.Windows.Forms.CheckBox();
             this.btnReset = new System.Windows.Forms.Button();
             this.grpClickType = new System.Windows.Forms.GroupBox();
@@ -85,6 +86,7 @@
             // 
             // grpSettings
             // 
+            this.grpSettings.Controls.Add(this.CheckBoxDarkMode);
             this.grpSettings.Controls.Add(this.CheckBoxStayOnTop);
             this.grpSettings.Controls.Add(this.btnReset);
             this.grpSettings.Location = new System.Drawing.Point(421, 101);
@@ -92,9 +94,17 @@
             this.grpSettings.Size = new System.Drawing.Size(138, 112);
             this.grpSettings.Text = "Settings";
             // 
+            // CheckBoxDarkMode
+            // 
+            this.CheckBoxDarkMode.Location = new System.Drawing.Point(32, 20);
+            this.CheckBoxDarkMode.Name = "CheckBoxDarkMode";
+            this.CheckBoxDarkMode.Size = new System.Drawing.Size(92, 17);
+            this.CheckBoxDarkMode.Text = "Dark Mode";
+            this.CheckBoxDarkMode.CheckedChanged += new System.EventHandler(this.CheckBoxDarkMode_Press);
+            // 
             // CheckBoxStayOnTop
             // 
-            this.CheckBoxStayOnTop.Location = new System.Drawing.Point(26, 32);
+            this.CheckBoxStayOnTop.Location = new System.Drawing.Point(26, 49);
             this.CheckBoxStayOnTop.Name = "CheckBoxStayOnTop";
             this.CheckBoxStayOnTop.Size = new System.Drawing.Size(92, 17);
             this.CheckBoxStayOnTop.Text = "Always on top";
@@ -102,7 +112,7 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(34, 57);
+            this.btnReset.Location = new System.Drawing.Point(34, 74);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 25);
             this.btnReset.Text = "Reset";
@@ -574,6 +584,7 @@
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnSelectFixed;
         private System.Windows.Forms.CheckBox CheckBoxStayOnTop;
+        private System.Windows.Forms.CheckBox CheckBoxDarkMode;
     }
 }
 
