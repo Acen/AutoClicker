@@ -83,10 +83,7 @@ namespace AutoClicker
 					w.Write((int)numCount.Value);
 
 					// Hotkey info
-					if (txtHotkey.Text == "None")
-						w.Write(0);
-					else
-						w.Write((int)hotkey);
+					w.Write((int)hotkey);
 
 					// Settings info
 					w.Write(CheckBoxStayOnTop.Checked);
@@ -194,14 +191,11 @@ namespace AutoClicker
 			ListThemedObjects();
 
 			LoadSettings();
+			ControlsHandler(null, null);
 			ClickTypeHandler(null, null);
 			LocationHandler(null, null);
 			DelayHandler(null, null);
 			CountHandler(null, null);
-
-			btnStop.Enabled = false;
-			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
-				btnHotkeyRemove.Enabled = false;
 
 			clicker.Finished += HandleFinished;
 		}
@@ -216,16 +210,24 @@ namespace AutoClicker
 			EnableControls();
 		}
 
+		private void ControlsHandler(object sender, EventArgs e)
+        {
+			// Start Button
+			// Check if any click types are enabled and if we have a hotkey.
+			if (!Convert.ToBoolean(hotkey) || (!rdbClickLeft.Checked && !rdbClickMiddle.Checked && !rdbClickRight.Checked))
+				btnStart.Enabled = false;
+			else
+				btnStart.Enabled = true;
+
+			// Hotkey Reset Button
+			btnHotkeyRemove.Enabled = Convert.ToBoolean(hotkey);
+		}
+
 		private void ClickTypeHandler(object sender, EventArgs e)
 		{
 			bool tmpDoubleClick = false, tmpLeftClick = false, tmpMiddleClick = false, tmpRightClick = false;
 
 			// Click Type
-
-			if (!rdbClickLeft.Checked && !rdbClickMiddle.Checked && !rdbClickRight.Checked) // Check if any click types are enabled.
-				btnStart.Enabled = false;
-			else
-				btnStart.Enabled = true;
 
 			if (rdbClickLeft.Checked)
 				tmpLeftClick = true;
@@ -394,18 +396,12 @@ namespace AutoClicker
 		{
 			base.WndProc(ref m);
 
+			// Hotkey is pressed
 			if (m.Msg == Win32.WM_HOTKEY)
 			{
-				// Ignore the hotkey if the user is editing it.
-				if (txtHotkey.Focused)
-					return;
-
-				Win32.FsModifiers modifiers = (Win32.FsModifiers)((int)m.LParam & 0xFFFF);
-				Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
-				if (key == (hotkey & Keys.KeyCode) && modifiers == hotkeyNodifiers && (rdbClickLeft.Checked || rdbClickMiddle.Checked || rdbClickRight.Checked)) // Check if any click types are enabled.
-					if (!clicker.IsAlive)
+					if (btnStart.Enabled)
 						BtnStart_Click(null, null);
-					else
+					else if (btnStop.Enabled)
 						BtnStop_Click(null, null);
 			}
 		}
@@ -450,10 +446,7 @@ namespace AutoClicker
 
 			txtHotkey.Enabled = true;
 			lblHotkey.Enabled = true;
-			if (txtHotkey.Text == "None") // If we don't have a hotkey set, disable the reset button.
-				btnHotkeyRemove.Enabled = false;
-			else
-				btnHotkeyRemove.Enabled = true;
+			btnHotkeyRemove.Enabled = Convert.ToBoolean(hotkey);
 			btnStart.Enabled = true;
 			btnStop.Enabled = false;
 		}
@@ -461,6 +454,7 @@ namespace AutoClicker
 		private void BtnHotkeyRemove_Click(object sender, EventArgs e)
 		{
 			UnsetHotkey();
+			grpMain.Focus();
 			btnHotkeyRemove.Enabled = false;
 		}
 		
@@ -472,9 +466,9 @@ namespace AutoClicker
 
 		private void UnsetHotkey()
 		{
-			txtHotkey.Text = "None";
-			grpMain.Focus();
+			txtHotkey.Text = Keys.None.ToString();
 			Win32.UnregisterHotKey(Handle, (int)hotkey);
+			hotkey = Keys.None;
 		}
 
 		private void TxtHotkey_KeyDown(object sender, KeyEventArgs e)
@@ -510,8 +504,7 @@ namespace AutoClicker
 
 		private void ListThemedObjects()
 		{
-			// TODO: check if you can just add based off of object type instead of individual listing
-
+			// TODO: check if you can just add based off of object type/name instead of individual listing
 			objects = new List<Control>
 			{
 				// Numeric Up/Down
@@ -532,7 +525,6 @@ namespace AutoClicker
 			text = new List<Control>
 			{
 				// Groups
-				// TODO: check if you can just add based off of object type instead of individual listing
 				grpMain,
 				grpLocation,
 				grpCount,
@@ -545,9 +537,7 @@ namespace AutoClicker
 
 		private void CheckBoxDarkMode_Press(object sender, EventArgs e)
 		{
-			Color FormColor;
-			Color TextBoxColor;
-			Color TextColor;
+			Color FormColor, TextBoxColor, TextColor;
 
 			if (CheckBoxDarkMode.Checked)
 			{
@@ -583,11 +573,7 @@ namespace AutoClicker
 
 		private void CheckBoxStayOnTop_Press(object sender, EventArgs e)
 		{
-			if (CheckBoxStayOnTop.Checked)
-                TopMost = true;
-
-            else
-				TopMost = false;
+			TopMost = CheckBoxStayOnTop.Checked;
 		}
 
 		private void BtnReset_Click(object sender, EventArgs e)
@@ -618,6 +604,7 @@ namespace AutoClicker
 
 				SaveSettings();
 				btnReset.Text = "Reset";
+				grpMain.Focus();
 				return;
 			}
 

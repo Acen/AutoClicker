@@ -144,6 +144,7 @@
             this.rdbClickRight.Size = new System.Drawing.Size(51, 17);
             this.rdbClickRight.Text = "Right";
             this.rdbClickRight.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickRight.CheckedChanged += new System.EventHandler(this.ControlsHandler);
             // 
             // rdbClickMiddle
             // 
@@ -152,6 +153,7 @@
             this.rdbClickMiddle.Size = new System.Drawing.Size(57, 17);
             this.rdbClickMiddle.Text = "Middle";
             this.rdbClickMiddle.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickMiddle.CheckedChanged += new System.EventHandler(this.ControlsHandler);
             // 
             // rdbClickLeft
             // 
@@ -162,6 +164,7 @@
             this.rdbClickLeft.Size = new System.Drawing.Size(44, 17);
             this.rdbClickLeft.Text = "Left";
             this.rdbClickLeft.CheckedChanged += new System.EventHandler(this.ClickTypeHandler);
+            this.rdbClickLeft.CheckedChanged += new System.EventHandler(this.ControlsHandler);
             // 
             // grpControls
             // 
@@ -177,6 +180,7 @@
             // 
             // btnStop
             // 
+            this.btnStop.Enabled = false;
             this.btnStop.Location = new System.Drawing.Point(87, 20);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 25);
@@ -186,7 +190,7 @@
             // lblHotkey
             // 
             this.lblHotkey.Location = new System.Drawing.Point(6, 53);
-            this.lblHotkey.Name = "lblHotkey";
+            //this.lblHotkey.Name = "lblHotkey";
             this.lblHotkey.Size = new System.Drawing.Size(41, 13);
             this.lblHotkey.Text = "Hotkey";
             // 
@@ -205,6 +209,7 @@
             this.btnHotkeyRemove.Size = new System.Drawing.Size(80, 25);
             this.btnHotkeyRemove.Text = "Clear Hotkey";
             this.btnHotkeyRemove.Click += new System.EventHandler(this.BtnHotkeyRemove_Click);
+            this.btnHotkeyRemove.Click += new System.EventHandler(this.ControlsHandler);
             // 
             // txtHotkey
             // 
@@ -215,6 +220,7 @@
             this.txtHotkey.Size = new System.Drawing.Size(145, 20);
             this.txtHotkey.Text = "None";
             this.txtHotkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtHotkey_KeyDown);
+            this.txtHotkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ControlsHandler);
             // 
             // grpCount
             // 
@@ -279,14 +285,14 @@
             // lblDelayMS_2
             // 
             this.lblDelayMS_2.Location = new System.Drawing.Point(269, 49);
-            this.lblDelayMS_2.Name = "lblDelayMS_2";
+            //this.lblDelayMS_2.Name = "lblDelayMS_2";
             this.lblDelayMS_2.Size = new System.Drawing.Size(20, 13);
             this.lblDelayMS_2.Text = "ms";
             // 
             // lblDelayMS_1
             // 
             this.lblDelayMS_1.Location = new System.Drawing.Point(174, 22);
-            this.lblDelayMS_1.Name = "lblDelayMS_1";
+            //this.lblDelayMS_1.Name = "lblDelayMS_1";
             this.lblDelayMS_1.Size = new System.Drawing.Size(20, 13);
             this.lblDelayMS_1.Text = "ms";
             // 
@@ -302,7 +308,7 @@
             // lblDelayDash
             // 
             this.lblDelayDash.Location = new System.Drawing.Point(174, 49);
-            this.lblDelayDash.Name = "lblDelayDash";
+            //this.lblDelayDash.Name = "lblDelayDash";
             this.lblDelayDash.Size = new System.Drawing.Size(10, 13);
             this.lblDelayDash.Text = "-";
             // 
@@ -385,7 +391,7 @@
             // lblRandomHeight
             // 
             this.lblRandomHeight.Location = new System.Drawing.Point(123, 171);
-            this.lblRandomHeight.Name = "lblRandomHeight";
+            //this.lblRandomHeight.Name = "lblRandomHeight";
             this.lblRandomHeight.Size = new System.Drawing.Size(38, 13);
             this.lblRandomHeight.Text = "Height";
             // 
@@ -401,7 +407,7 @@
             // lblRandomWidth
             // 
             this.lblRandomWidth.Location = new System.Drawing.Point(6, 171);
-            this.lblRandomWidth.Name = "lblRandomWidth";
+            //this.lblRandomWidth.Name = "lblRandomWidth";
             this.lblRandomWidth.Size = new System.Drawing.Size(35, 13);
             this.lblRandomWidth.Text = "Width";
             // 
@@ -417,7 +423,7 @@
             // lblRandomY
             // 
             this.lblRandomY.Location = new System.Drawing.Point(149, 144);
-            this.lblRandomY.Name = "lblRandomY";
+            //this.lblRandomY.Name = "lblRandomY";
             this.lblRandomY.Size = new System.Drawing.Size(14, 13);
             this.lblRandomY.Text = "Y";
             // 
@@ -432,7 +438,7 @@
             // lblRandomX
             // 
             this.lblRandomX.Location = new System.Drawing.Point(27, 144);
-            this.lblRandomX.Name = "lblRandomX";
+            //this.lblRandomX.Name = "lblRandomX";
             this.lblRandomX.Size = new System.Drawing.Size(14, 13);
             this.lblRandomX.Text = "X";
             // 
@@ -447,7 +453,7 @@
             // lblFixedY
             // 
             this.lblFixedY.Location = new System.Drawing.Point(149, 93);
-            this.lblFixedY.Name = "lblFixedY";
+            //this.lblFixedY.Name = "lblFixedY";
             this.lblFixedY.Size = new System.Drawing.Size(14, 13);
             this.lblFixedY.Text = "Y";
             // 
@@ -462,7 +468,7 @@
             // lblFixedX
             // 
             this.lblFixedX.Location = new System.Drawing.Point(27, 93);
-            this.lblFixedX.Name = "lblFixedX";
+            //this.lblFixedX.Name = "lblFixedX";
             this.lblFixedX.Size = new System.Drawing.Size(14, 13);
             this.lblFixedX.Text = "X";
             // 
