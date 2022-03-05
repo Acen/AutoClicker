@@ -55,12 +55,19 @@ namespace AutoClicker
 					else if (rdbLocationRandomArea.Checked)
 						w.Write((byte)4);
 
+					else if (rdbLocationRandomAtCursor.Checked)
+						w.Write((byte)5);
+
 					w.Write((int)numFixedX.Value);
 					w.Write((int)numFixedY.Value);
+
 					w.Write((int)numRandomX.Value);
 					w.Write((int)numRandomY.Value);
 					w.Write((int)numRandomWidth.Value);
 					w.Write((int)numRandomHeight.Value);
+
+					w.Write ((int)numRandomAtCursorX.Value);
+					w.Write ((int)numRandomAtCursorY.Value);
 
 					// Delay info
 					if (rdbDelayFixed.Checked)
@@ -82,6 +89,9 @@ namespace AutoClicker
 
 					w.Write((int)numCount.Value);
 
+					// Chance info
+					w.Write((int)numChance.Value);
+
 					// Hotkey info
 					w.Write((int)hotkey);
 
@@ -94,7 +104,7 @@ namespace AutoClicker
 
 		private void LoadSettings()
 		{
-			if (File.Exists(cfgfile_path) && new FileInfo(cfgfile_path).Length == 53) // hack to prevent reading out of bounds
+			if (File.Exists(cfgfile_path) && new FileInfo(cfgfile_path).Length == 65) // hack to prevent reading out of bounds
 			{
 				using (FileStream fs = File.Open(cfgfile_path, FileMode.Open))
 				{
@@ -121,14 +131,21 @@ namespace AutoClicker
 							case 4:
 								rdbLocationRandomArea.Checked = true;
 								break;
+							case 5:
+								rdbLocationRandomAtCursor.Checked = true;
+								break;
 						}
 
 						numFixedX.Value = r.ReadInt32();
 						numFixedY.Value = r.ReadInt32();
+
 						numRandomX.Value = r.ReadInt32();
 						numRandomY.Value = r.ReadInt32();
 						numRandomWidth.Value = r.ReadInt32();
 						numRandomHeight.Value = r.ReadInt32();
+
+						numRandomAtCursorX.Value = r.ReadInt32();
+						numRandomAtCursorY.Value = r.ReadInt32();
 
 						// Delay info
 						switch (r.ReadByte())
@@ -157,6 +174,9 @@ namespace AutoClicker
 						}
 
 						numCount.Value = r.ReadInt32();
+
+						// Chance info
+						numChance.Value = r.ReadInt32();
 
 						// Hotkey info
 						hotkey = (Keys)r.ReadInt32();
@@ -196,8 +216,11 @@ namespace AutoClicker
 			LocationHandler(null, null);
 			DelayHandler(null, null);
 			CountHandler(null, null);
+			ChanceHandler(null, null);
 
 			clicker.Finished += HandleFinished;
+
+			grpMain.Focus();
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -267,6 +290,10 @@ namespace AutoClicker
 				numRandomWidth.Enabled = false;
 				numRandomHeight.Enabled = false;
 				btnSelectRandom.Enabled = false;
+
+				numRandomAtCursorX.Enabled = false;
+				numRandomAtCursorY.Enabled = false;
+				btnSelectRandomAtCursor.Enabled = false;
 			}
 
 			else if (rdbLocationRandomArea.Checked)
@@ -287,6 +314,32 @@ namespace AutoClicker
 				numRandomWidth.Enabled = true;
 				numRandomHeight.Enabled = true;
 				btnSelectRandom.Enabled = true;
+
+				numRandomAtCursorX.Enabled = false;
+				numRandomAtCursorY.Enabled = false;
+				btnSelectRandomAtCursor.Enabled = false;
+			}
+			
+			else if (rdbLocationRandomAtCursor.Checked)
+			 //Random at cursor
+            {
+				tmpLocationType = AutoClicker.LocationType.RandomAtCursor;
+				tmpX = (int)numRandomAtCursorX.Value;
+				tmpY = (int)numRandomAtCursorY.Value;
+
+				numFixedX.Enabled = false;
+				numFixedY.Enabled = false;
+				btnSelectFixed.Enabled = false;
+
+				numRandomX.Enabled = false;
+				numRandomY.Enabled = false;
+				numRandomWidth.Enabled = false;
+				numRandomHeight.Enabled = false;
+				btnSelectRandom.Enabled = false;
+
+				numRandomAtCursorX.Enabled = true;
+				numRandomAtCursorY.Enabled = true;
+				btnSelectRandomAtCursor.Enabled = true;
 			}
 
 			else
@@ -301,6 +354,10 @@ namespace AutoClicker
 				numRandomWidth.Enabled = false;
 				numRandomHeight.Enabled = false;
 				btnSelectRandom.Enabled = false;
+
+				numRandomAtCursorX.Enabled = false;
+				numRandomAtCursorY.Enabled = false;
+				btnSelectRandomAtCursor.Enabled = false;
 
 				if (rdbLocationMouse.Checked)
 				// Mouse location
@@ -379,6 +436,13 @@ namespace AutoClicker
 			clicker.UpdateCount(tmpCountType, tmpCount);
 		}
 
+		private void ChanceHandler(object sender, EventArgs e)
+        {
+			int tmpChance = (int)numChance.Value;
+
+			clicker.UpdateChance(tmpChance);
+		}
+
 		// Wait function
 		public void Wait(int time)
 		{
@@ -420,6 +484,7 @@ namespace AutoClicker
 			grpDelay.Enabled = false;
 			grpCount.Enabled = false;
 			grpSettings.Enabled = false;
+			grpChance.Enabled = false;
 
 			txtHotkey.Enabled = false;
 			lblHotkey.Enabled = false;
@@ -443,6 +508,7 @@ namespace AutoClicker
 			grpDelay.Enabled = true;
 			grpCount.Enabled = true;
 			grpSettings.Enabled = true;
+			grpChance.Enabled = true;
 
 			txtHotkey.Enabled = true;
 			lblHotkey.Enabled = true;
@@ -518,6 +584,9 @@ namespace AutoClicker
 				numDelayFixed,
 				numDelayRangeMin,
 				numDelayRangeMax,
+				numRandomAtCursorX,
+				numRandomAtCursorY,
+				numChance,
 
 				// Controls
 				txtHotkey
@@ -531,7 +600,8 @@ namespace AutoClicker
 				grpControls,
 				grpClickType,
 				grpSettings,
-				grpDelay
+				grpDelay,
+				grpChance
 			};
 		}
 
@@ -594,6 +664,9 @@ namespace AutoClicker
 				numRandomWidth.Value = 100;
 				numRandomHeight.Value = 100;
 
+				numRandomAtCursorX.Value = 0;
+				numRandomAtCursorY.Value = 0;
+
 				rdbDelayFixed.Checked = true;
 				numDelayFixed.Value = 100;
 				numDelayRangeMin.Value = 500;
@@ -601,6 +674,8 @@ namespace AutoClicker
 
 				rdbUntilStopped.Checked = true;
 				numCount.Value = 100;
+
+				numChance.Value = 100;
 
 				SaveSettings();
 				btnReset.Text = "Reset";
@@ -649,6 +724,25 @@ namespace AutoClicker
 		{
 			numFixedX.Value = X;
 			numFixedY.Value = Y;
+
+			CheckBoxStayOnTop_Press(null, null);
+			grpMain.Enabled = true;
+			grpMain.Focus();
+		}
+		
+		private void BtnSelectRandomAtCursor_Click(object sender, EventArgs e)
+		{
+			TopMost = false;
+			grpMain.Enabled = false;
+
+			var form = new SelectionFormRandomAtCursor(this);
+			form.Show();
+		}
+
+		public void SendRectangleRandomAtCursor(int Width, int Height)
+		{
+			numRandomAtCursorX.Value = Width;
+			numRandomAtCursorY.Value = Height;
 
 			CheckBoxStayOnTop_Press(null, null);
 			grpMain.Enabled = true;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace AutoClicker
 {
@@ -20,7 +21,8 @@ namespace AutoClicker
 			Cursor,
 			Fixed,
 			Random,
-			RandomRange
+			RandomRange,
+			RandomAtCursor
 		}
 
 		private LocationType locationType;
@@ -53,15 +55,12 @@ namespace AutoClicker
 		private int count;
 		#endregion
 
-		Thread Clicker;
-        readonly Random rnd = new Random();
+		#region "Chance"
+		private int chance;
+        #endregion
 
-		public class NextClickEventArgs : EventArgs
-		{
-			public int NextClick;
-		}
-
-		public event EventHandler<NextClickEventArgs> NextClick;
+        Thread Clicker;
+        readonly static Random rnd = new Random();
 
 		public EventHandler<EventArgs> Finished;
 
@@ -70,12 +69,36 @@ namespace AutoClicker
 			//System.Diagnostics.Debug.Print("Click() started");
 			
 			int remaining = count;
+
+			int nextDelay = delay;
+
+			bool CheckedMousePos = false;
+
+			int RandomAtCursorOriginalX = 0;
+			int RandomAtCursorOriginalY = 0;
+
 			//System.Diagnostics.Debug.Print("Count type: {0}, count: {1}", countType, count);
 			while (countType == CountType.UntilStopped || remaining > 0)
 			{
+				Click:
 				if (!IsAlive)
 					return;
-				
+
+				// ちょっと寝る
+				if (delayType == DelayType.Range)
+					nextDelay = rnd.Next(delay, delayRange);
+
+				Thread.Sleep(nextDelay);
+				//System.Diagnostics.Debug.Print("Had a nap");
+
+				// perform chance check
+				if (chance != 100 && (rnd.Next(100) > chance))
+                {
+					remaining--;
+					//System.Diagnostics.Debug.Print("Chance failed to click");
+					goto Click;
+				}
+
 				List<Win32.INPUT> inputs = new List<Win32.INPUT>();
 
 				// Move the mouse if required.
@@ -120,6 +143,28 @@ namespace AutoClicker
 					};
 					inputs.Add(input);
 				}
+
+				else if (locationType == LocationType.RandomAtCursor)
+                {
+					if (!CheckedMousePos)
+					{
+						RandomAtCursorOriginalX = Cursor.Position.X;
+						RandomAtCursorOriginalY = Cursor.Position.Y;
+
+						CheckedMousePos = true;
+					}
+
+					Win32.INPUT input = new Win32.INPUT
+					{
+						mi = new Win32.MOUSEINPUT
+						{
+							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(RandomAtCursorOriginalX - x, RandomAtCursorOriginalX + x)),
+							dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(RandomAtCursorOriginalY - y, RandomAtCursorOriginalY + y)),
+							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
+						}
+					};
+					inputs.Add(input);
+                }
 				//System.Diagnostics.Debug.Print("Move command added");
 
 				// マウスをクリック
@@ -168,19 +213,8 @@ namespace AutoClicker
 				//System.Diagnostics.Debug.Print("Click commands added");
 
 				Win32.SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf(new Win32.INPUT()));
-                //System.Diagnostics.Debug.Print("Command sent");
+				//System.Diagnostics.Debug.Print("Command sent");
 
-                // ちょっと寝る
-                int nextDelay;
-                if (delayType == DelayType.Fixed)
-					nextDelay = delay;
-
-				else
-					nextDelay = rnd.Next(delay, delayRange);
-
-				NextClick?.Invoke(this, new NextClickEventArgs { NextClick = nextDelay });
-				Thread.Sleep(nextDelay);
-				//System.Diagnostics.Debug.Print("Had a nap");
 				remaining--;
 			}
 			Finished?.Invoke(this, null);
@@ -240,6 +274,11 @@ namespace AutoClicker
 		{
 			countType = tmpCountType;
 			count = tmpCount;
+		}
+
+		public void UpdateChance(int tmpChance)
+		{
+			chance = tmpChance;
 		}
 	}
 }

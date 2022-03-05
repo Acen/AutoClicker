@@ -12,6 +12,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpMain = new System.Windows.Forms.GroupBox();
+            this.grpChance = new System.Windows.Forms.GroupBox();
+            this.lblChance = new System.Windows.Forms.Label();
+            this.lblChancePercent = new System.Windows.Forms.Label();
+            this.numChance = new System.Windows.Forms.NumericUpDown();
             this.grpSettings = new System.Windows.Forms.GroupBox();
             this.CheckBoxDarkMode = new System.Windows.Forms.CheckBox();
             this.CheckBoxStayOnTop = new System.Windows.Forms.CheckBox();
@@ -42,6 +46,12 @@
             this.rdbDelayRange = new System.Windows.Forms.RadioButton();
             this.rdbDelayFixed = new System.Windows.Forms.RadioButton();
             this.grpLocation = new System.Windows.Forms.GroupBox();
+            this.btnSelectRandomAtCursor = new System.Windows.Forms.Button();
+            this.lblRandomAtCursorY = new System.Windows.Forms.Label();
+            this.numRandomAtCursorY = new System.Windows.Forms.NumericUpDown();
+            this.lblRandomAtCursorX = new System.Windows.Forms.Label();
+            this.numRandomAtCursorX = new System.Windows.Forms.NumericUpDown();
+            this.rdbLocationRandomAtCursor = new System.Windows.Forms.RadioButton();
             this.btnSelectFixed = new System.Windows.Forms.Button();
             this.btnSelectRandom = new System.Windows.Forms.Button();
             this.lblRandomHeight = new System.Windows.Forms.Label();
@@ -60,10 +70,21 @@
             this.rdbLocationFixed = new System.Windows.Forms.RadioButton();
             this.rdbLocationRandom = new System.Windows.Forms.RadioButton();
             this.rdbLocationMouse = new System.Windows.Forms.RadioButton();
+            this.grpMain.SuspendLayout();
+            this.grpChance.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numChance)).BeginInit();
+            this.grpSettings.SuspendLayout();
+            this.grpClickType.SuspendLayout();
+            this.grpControls.SuspendLayout();
+            this.grpCount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numCount)).BeginInit();
+            this.grpDelay.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayFixed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayRangeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayRangeMin)).BeginInit();
+            this.grpLocation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numRandomAtCursorY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRandomAtCursorX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomY)).BeginInit();
@@ -73,6 +94,7 @@
             // 
             // grpMain
             // 
+            this.grpMain.Controls.Add(this.grpChance);
             this.grpMain.Controls.Add(this.grpSettings);
             this.grpMain.Controls.Add(this.grpClickType);
             this.grpMain.Controls.Add(this.grpControls);
@@ -81,8 +103,41 @@
             this.grpMain.Controls.Add(this.grpLocation);
             this.grpMain.Location = new System.Drawing.Point(10, 4);
             this.grpMain.Name = "grpMain";
-            this.grpMain.Size = new System.Drawing.Size(565, 305);
+            this.grpMain.Size = new System.Drawing.Size(565, 386);
             this.grpMain.Text = "Click details";
+            // 
+            // grpChance
+            // 
+            this.grpChance.Controls.Add(this.lblChance);
+            this.grpChance.Controls.Add(this.lblChancePercent);
+            this.grpChance.Controls.Add(this.numChance);
+            this.grpChance.Location = new System.Drawing.Point(6, 300);
+            this.grpChance.Name = "grpChance";
+            this.grpChance.Size = new System.Drawing.Size(250, 75);
+            this.grpChance.Text = "Chance";
+            // 
+            // lblChance
+            // 
+            this.lblChance.Location = new System.Drawing.Point(6, 22);
+            //this.lblChance.Name = "lblChance";
+            this.lblChance.Size = new System.Drawing.Size(115, 13);
+            this.lblChance.Text = "Chance to click mouse";
+            // 
+            // lblChancePercent
+            // 
+            this.lblChancePercent.Location = new System.Drawing.Point(181, 21);
+            //this.lblChancePercent.Name = "lblChancePercent";
+            this.lblChancePercent.Size = new System.Drawing.Size(20, 13);
+            this.lblChancePercent.Text = "%";
+            // 
+            // numChance
+            // 
+            this.numChance.Location = new System.Drawing.Point(127, 19);
+            this.numChance.Minimum = 1;
+            this.numChance.Name = "numChance";
+            this.numChance.Size = new System.Drawing.Size(48, 20);
+            this.numChance.Value = 100;
+            this.numChance.ValueChanged += new System.EventHandler(this.ChanceHandler);
             // 
             // grpSettings
             // 
@@ -228,21 +283,21 @@
             this.grpCount.Controls.Add(this.numCount);
             this.grpCount.Controls.Add(this.rdbCount);
             this.grpCount.Controls.Add(this.rdbUntilStopped);
-            this.grpCount.Location = new System.Drawing.Point(6, 219);
+            this.grpCount.Location = new System.Drawing.Point(269, 300);
             this.grpCount.Name = "grpCount";
-            this.grpCount.Size = new System.Drawing.Size(250, 75);
+            this.grpCount.Size = new System.Drawing.Size(290, 75);
             this.grpCount.Text = "Count";
             // 
             // lblCountClicks
             // 
-            this.lblCountClicks.Location = new System.Drawing.Point(182, 47);
-            this.lblCountClicks.Name = "lblCountClicks";
+            this.lblCountClicks.Location = new System.Drawing.Point(182, 51);
+            //this.lblCountClicks.Name = "lblCountClicks";
             this.lblCountClicks.Size = new System.Drawing.Size(34, 13);
             this.lblCountClicks.Text = "clicks";
             // 
             // numCount
             // 
-            this.numCount.Location = new System.Drawing.Point(104, 44);
+            this.numCount.Location = new System.Drawing.Point(104, 48);
             this.numCount.Maximum = 1000000;
             this.numCount.Minimum = 1;
             this.numCount.Name = "numCount";
@@ -252,7 +307,7 @@
             // 
             // rdbCount
             // 
-            this.rdbCount.Location = new System.Drawing.Point(6, 44);
+            this.rdbCount.Location = new System.Drawing.Point(6, 48);
             this.rdbCount.Name = "rdbCount";
             this.rdbCount.Size = new System.Drawing.Size(88, 17);
             this.rdbCount.Text = "Fixed number";
@@ -349,6 +404,12 @@
             // 
             // grpLocation
             // 
+            this.grpLocation.Controls.Add(this.btnSelectRandomAtCursor);
+            this.grpLocation.Controls.Add(this.lblRandomAtCursorY);
+            this.grpLocation.Controls.Add(this.numRandomAtCursorY);
+            this.grpLocation.Controls.Add(this.lblRandomAtCursorX);
+            this.grpLocation.Controls.Add(this.numRandomAtCursorX);
+            this.grpLocation.Controls.Add(this.rdbLocationRandomAtCursor);
             this.grpLocation.Controls.Add(this.btnSelectFixed);
             this.grpLocation.Controls.Add(this.btnSelectRandom);
             this.grpLocation.Controls.Add(this.lblRandomHeight);
@@ -369,12 +430,58 @@
             this.grpLocation.Controls.Add(this.rdbLocationMouse);
             this.grpLocation.Location = new System.Drawing.Point(6, 16);
             this.grpLocation.Name = "grpLocation";
-            this.grpLocation.Size = new System.Drawing.Size(250, 197);
+            this.grpLocation.Size = new System.Drawing.Size(250, 278);
             this.grpLocation.Text = "Location";
+            // 
+            // btnSelectRandomAtCursor
+            // 
+            this.btnSelectRandomAtCursor.Location = new System.Drawing.Point(147, 211);
+            this.btnSelectRandomAtCursor.Name = "btnSelectRandomAtCursor";
+            this.btnSelectRandomAtCursor.Size = new System.Drawing.Size(75, 25);
+            this.btnSelectRandomAtCursor.Text = "Select...";
+            this.btnSelectRandomAtCursor.Click += new System.EventHandler(this.BtnSelectRandomAtCursor_Click);
+            // 
+            // lblRandomAtCursorY
+            // 
+            this.lblRandomAtCursorY.Location = new System.Drawing.Point(152, 244);
+            //this.lblRandomAtCursorY.Name = "lblRandomAtCursorY";
+            this.lblRandomAtCursorY.Size = new System.Drawing.Size(14, 13);
+            this.lblRandomAtCursorY.Text = "Y";
+            // 
+            // numRandomAtCursorY
+            // 
+            this.numRandomAtCursorY.Location = new System.Drawing.Point(170, 242);
+            this.numRandomAtCursorY.Maximum = 1000000;
+            this.numRandomAtCursorY.Name = "numRandomAtCursorY";
+            this.numRandomAtCursorY.Size = new System.Drawing.Size(70, 20);
+            this.numRandomAtCursorY.ValueChanged += new System.EventHandler(this.LocationHandler);
+            // 
+            // lblRandomAtCursorX
+            // 
+            this.lblRandomAtCursorX.Location = new System.Drawing.Point(30, 244);
+            //this.lblRandomAtCursorX.Name = "lblRandomAtCursorX";
+            this.lblRandomAtCursorX.Size = new System.Drawing.Size(14, 13);
+            this.lblRandomAtCursorX.Text = "X";
+            // 
+            // numRandomAtCursorX
+            // 
+            this.numRandomAtCursorX.Location = new System.Drawing.Point(48, 242);
+            this.numRandomAtCursorX.Maximum = 1000000;
+            this.numRandomAtCursorX.Name = "numRandomAtCursorX";
+            this.numRandomAtCursorX.Size = new System.Drawing.Size(70, 20);
+            this.numRandomAtCursorX.ValueChanged += new System.EventHandler(this.LocationHandler);
+            // 
+            // rdbLocationRandomAtCursor
+            // 
+            this.rdbLocationRandomAtCursor.Location = new System.Drawing.Point(6, 215);
+            this.rdbLocationRandomAtCursor.Name = "rdbLocationRandomAtCursor";
+            this.rdbLocationRandomAtCursor.Size = new System.Drawing.Size(135, 17);
+            this.rdbLocationRandomAtCursor.Text = "Random area at mouse";
+            this.rdbLocationRandomAtCursor.CheckedChanged += new System.EventHandler(this.LocationHandler);
             // 
             // btnSelectFixed
             // 
-            this.btnSelectFixed.Location = new System.Drawing.Point(101, 63);
+            this.btnSelectFixed.Location = new System.Drawing.Point(101, 70);
             this.btnSelectFixed.Name = "btnSelectFixed";
             this.btnSelectFixed.Size = new System.Drawing.Size(75, 25);
             this.btnSelectFixed.Text = "Select...";
@@ -382,7 +489,7 @@
             // 
             // btnSelectRandom
             // 
-            this.btnSelectRandom.Location = new System.Drawing.Point(101, 114);
+            this.btnSelectRandom.Location = new System.Drawing.Point(101, 127);
             this.btnSelectRandom.Name = "btnSelectRandom";
             this.btnSelectRandom.Size = new System.Drawing.Size(75, 25);
             this.btnSelectRandom.Text = "Select...";
@@ -390,14 +497,14 @@
             // 
             // lblRandomHeight
             // 
-            this.lblRandomHeight.Location = new System.Drawing.Point(123, 171);
+            this.lblRandomHeight.Location = new System.Drawing.Point(123, 187);
             //this.lblRandomHeight.Name = "lblRandomHeight";
             this.lblRandomHeight.Size = new System.Drawing.Size(38, 13);
             this.lblRandomHeight.Text = "Height";
             // 
             // numRandomHeight
             // 
-            this.numRandomHeight.Location = new System.Drawing.Point(167, 169);
+            this.numRandomHeight.Location = new System.Drawing.Point(167, 185);
             this.numRandomHeight.Maximum = 1000000;
             this.numRandomHeight.Name = "numRandomHeight";
             this.numRandomHeight.Size = new System.Drawing.Size(70, 20);
@@ -406,14 +513,14 @@
             // 
             // lblRandomWidth
             // 
-            this.lblRandomWidth.Location = new System.Drawing.Point(6, 171);
+            this.lblRandomWidth.Location = new System.Drawing.Point(6, 189);
             //this.lblRandomWidth.Name = "lblRandomWidth";
             this.lblRandomWidth.Size = new System.Drawing.Size(35, 13);
             this.lblRandomWidth.Text = "Width";
             // 
             // numRandomWidth
             // 
-            this.numRandomWidth.Location = new System.Drawing.Point(45, 169);
+            this.numRandomWidth.Location = new System.Drawing.Point(45, 185);
             this.numRandomWidth.Maximum = 1000000;
             this.numRandomWidth.Name = "numRandomWidth";
             this.numRandomWidth.Size = new System.Drawing.Size(70, 20);
@@ -422,14 +529,14 @@
             // 
             // lblRandomY
             // 
-            this.lblRandomY.Location = new System.Drawing.Point(149, 144);
+            this.lblRandomY.Location = new System.Drawing.Point(149, 160);
             //this.lblRandomY.Name = "lblRandomY";
             this.lblRandomY.Size = new System.Drawing.Size(14, 13);
             this.lblRandomY.Text = "Y";
             // 
             // numRandomY
             // 
-            this.numRandomY.Location = new System.Drawing.Point(167, 142);
+            this.numRandomY.Location = new System.Drawing.Point(167, 158);
             this.numRandomY.Maximum = 1000000;
             this.numRandomY.Name = "numRandomY";
             this.numRandomY.Size = new System.Drawing.Size(70, 20);
@@ -437,14 +544,14 @@
             // 
             // lblRandomX
             // 
-            this.lblRandomX.Location = new System.Drawing.Point(27, 144);
+            this.lblRandomX.Location = new System.Drawing.Point(27, 162);
             //this.lblRandomX.Name = "lblRandomX";
             this.lblRandomX.Size = new System.Drawing.Size(14, 13);
             this.lblRandomX.Text = "X";
             // 
             // numRandomX
             // 
-            this.numRandomX.Location = new System.Drawing.Point(45, 142);
+            this.numRandomX.Location = new System.Drawing.Point(45, 158);
             this.numRandomX.Maximum = 1000000;
             this.numRandomX.Name = "numRandomX";
             this.numRandomX.Size = new System.Drawing.Size(70, 20);
@@ -452,14 +559,14 @@
             // 
             // lblFixedY
             // 
-            this.lblFixedY.Location = new System.Drawing.Point(149, 93);
+            this.lblFixedY.Location = new System.Drawing.Point(149, 103);
             //this.lblFixedY.Name = "lblFixedY";
             this.lblFixedY.Size = new System.Drawing.Size(14, 13);
             this.lblFixedY.Text = "Y";
             // 
             // numFixedY
             // 
-            this.numFixedY.Location = new System.Drawing.Point(167, 91);
+            this.numFixedY.Location = new System.Drawing.Point(167, 101);
             this.numFixedY.Maximum = 1000000;
             this.numFixedY.Name = "numFixedY";
             this.numFixedY.Size = new System.Drawing.Size(70, 20);
@@ -467,14 +574,14 @@
             // 
             // lblFixedX
             // 
-            this.lblFixedX.Location = new System.Drawing.Point(27, 93);
+            this.lblFixedX.Location = new System.Drawing.Point(27, 103);
             //this.lblFixedX.Name = "lblFixedX";
             this.lblFixedX.Size = new System.Drawing.Size(14, 13);
             this.lblFixedX.Text = "X";
             // 
             // numFixedX
             // 
-            this.numFixedX.Location = new System.Drawing.Point(45, 91);
+            this.numFixedX.Location = new System.Drawing.Point(45, 101);
             this.numFixedX.Maximum = 1000000;
             this.numFixedX.Name = "numFixedX";
             this.numFixedX.Size = new System.Drawing.Size(70, 20);
@@ -482,7 +589,7 @@
             // 
             // rdbLocationRandomArea
             // 
-            this.rdbLocationRandomArea.Location = new System.Drawing.Point(6, 118);
+            this.rdbLocationRandomArea.Location = new System.Drawing.Point(6, 131);
             this.rdbLocationRandomArea.Name = "rdbLocationRandomArea";
             this.rdbLocationRandomArea.Size = new System.Drawing.Size(89, 17);
             this.rdbLocationRandomArea.Text = "Random area";
@@ -490,7 +597,7 @@
             // 
             // rdbLocationFixed
             // 
-            this.rdbLocationFixed.Location = new System.Drawing.Point(6, 67);
+            this.rdbLocationFixed.Location = new System.Drawing.Point(6, 74);
             this.rdbLocationFixed.Name = "rdbLocationFixed";
             this.rdbLocationFixed.Size = new System.Drawing.Size(90, 17);
             this.rdbLocationFixed.Text = "Fixed location";
@@ -498,7 +605,7 @@
             // 
             // rdbLocationRandom
             // 
-            this.rdbLocationRandom.Location = new System.Drawing.Point(6, 43);
+            this.rdbLocationRandom.Location = new System.Drawing.Point(6, 47);
             this.rdbLocationRandom.Name = "rdbLocationRandom";
             this.rdbLocationRandom.Size = new System.Drawing.Size(115, 17);
             this.rdbLocationRandom.Text = "Random on screen";
@@ -518,7 +625,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(585, 318);
+            this.ClientSize = new System.Drawing.Size(585, 399);
             this.Controls.Add(this.grpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -528,10 +635,13 @@
             this.Text = "Auto Clicker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numChance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayFixed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayRangeMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDelayRangeMin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRandomAtCursorY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRandomAtCursorX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRandomY)).EndInit();
@@ -588,9 +698,19 @@
         private System.Windows.Forms.Button btnSelectRandom;
         private System.Windows.Forms.GroupBox grpSettings;
         private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.Button btnSelectFixed;
         private System.Windows.Forms.CheckBox CheckBoxStayOnTop;
         private System.Windows.Forms.CheckBox CheckBoxDarkMode;
+        private System.Windows.Forms.Button btnSelectRandomAtCursor;
+        private System.Windows.Forms.Label lblRandomAtCursorY;
+        private System.Windows.Forms.NumericUpDown numRandomAtCursorY;
+        private System.Windows.Forms.Label lblRandomAtCursorX;
+        private System.Windows.Forms.NumericUpDown numRandomAtCursorX;
+        private System.Windows.Forms.RadioButton rdbLocationRandomAtCursor;
+        private System.Windows.Forms.GroupBox grpChance;
+        private System.Windows.Forms.Label lblChancePercent;
+        private System.Windows.Forms.NumericUpDown numChance;
+        private System.Windows.Forms.Label lblChance;
+        private System.Windows.Forms.Button btnSelectFixed;
     }
 }
 

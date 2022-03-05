@@ -45,4 +45,27 @@
 
         #endregion
     }
+
+    partial class SelectionFormRandomAtCursor
+    {
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            // 
+            // SelectionFormRandomAtCursor
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Opacity = 0.1D;
+
+        }
+
+        #endregion
+    }
 }
