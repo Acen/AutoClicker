@@ -321,7 +321,7 @@ namespace AutoClicker
 			}
 			
 			else if (rdbLocationRandomAtCursor.Checked)
-			 //Random at cursor
+			//Random at cursor
             {
 				tmpLocationType = AutoClicker.LocationType.RandomAtCursor;
 				tmpX = (int)numRandomAtCursorX.Value;
@@ -441,18 +441,6 @@ namespace AutoClicker
 			int tmpChance = (int)numChance.Value;
 
 			clicker.UpdateChance(tmpChance);
-		}
-
-		// Wait function
-		public void Wait(int time)
-		{
-			Thread thread = new Thread(delegate ()
-			{
-				Thread.Sleep(time);
-			});
-			thread.Start();
-			while (thread.IsAlive)
-				Application.DoEvents();
 		}
 
 		// Handles clicking hotkey to enable clicker
@@ -648,6 +636,12 @@ namespace AutoClicker
 
 		private void BtnReset_Click(object sender, EventArgs e)
 		{
+			Thread thread = new Thread(Reset);
+			thread.Start();
+        }
+
+		private void Reset()
+        {
 			if (btnReset.Text == "Sure?")
 			{
 				rdbClickLeft.Checked = true;
@@ -664,8 +658,8 @@ namespace AutoClicker
 				numRandomWidth.Value = 100;
 				numRandomHeight.Value = 100;
 
-				numRandomAtCursorX.Value = 0;
-				numRandomAtCursorY.Value = 0;
+				numRandomAtCursorX.Value = 50;
+				numRandomAtCursorY.Value = 50;
 
 				rdbDelayFixed.Checked = true;
 				numDelayFixed.Value = 100;
@@ -677,17 +671,18 @@ namespace AutoClicker
 
 				numChance.Value = 100;
 
-				SaveSettings();
 				btnReset.Text = "Reset";
 				grpMain.Focus();
-				return;
 			}
 
-			btnReset.Text = "Sure?";
-			grpMain.Focus();
-			Wait(3000);
-			btnReset.Text = "Reset";
-        }
+			else
+            {
+				btnReset.Text = "Sure?";
+				grpMain.Focus();
+				Thread.Sleep(3000);
+				btnReset.Text = "Reset";
+			}
+		}
 
 		// Location Buttons
 		private void BtnSelectRandom_Click(object sender, EventArgs e)

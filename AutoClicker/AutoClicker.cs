@@ -66,38 +66,23 @@ namespace AutoClicker
 
 		private void Click()
 		{
-			//System.Diagnostics.Debug.Print("Click() started");
-			
-			int remaining = count;
+			int CursorOriginalPositionX = Cursor.Position.X;
+			int CursorOriginalPositionY = Cursor.Position.Y;
 
-			int nextDelay = delay;
-
-			bool CheckedMousePos = false;
-
-			int RandomAtCursorOriginalX = 0;
-			int RandomAtCursorOriginalY = 0;
-
-			//System.Diagnostics.Debug.Print("Count type: {0}, count: {1}", countType, count);
-			while (countType == CountType.UntilStopped || remaining > 0)
+			for (int remaining = count; countType == CountType.UntilStopped || remaining > 0; remaining--)
 			{
-				Click:
-				if (!IsAlive)
-					return;
+				// ちょっと寝る (Take a short rest)
 
-				// ちょっと寝る
-				if (delayType == DelayType.Range)
-					nextDelay = rnd.Next(delay, delayRange);
+				// Fixed Delay
+				if (delayType == DelayType.Fixed)
+					Thread.Sleep(delay);
+				// Ranged Delay
+				else
+					Thread.Sleep(rnd.Next(delay, delayRange));
 
-				Thread.Sleep(nextDelay);
-				//System.Diagnostics.Debug.Print("Had a nap");
-
-				// perform chance check
+				// Perform chance check.
 				if (chance != 100 && (rnd.Next(100) > chance))
-                {
-					remaining--;
-					//System.Diagnostics.Debug.Print("Chance failed to click");
-					goto Click;
-				}
+					continue;
 
 				List<Win32.INPUT> inputs = new List<Win32.INPUT>();
 
@@ -146,28 +131,19 @@ namespace AutoClicker
 
 				else if (locationType == LocationType.RandomAtCursor)
                 {
-					if (!CheckedMousePos)
-					{
-						RandomAtCursorOriginalX = Cursor.Position.X;
-						RandomAtCursorOriginalY = Cursor.Position.Y;
-
-						CheckedMousePos = true;
-					}
-
 					Win32.INPUT input = new Win32.INPUT
 					{
 						mi = new Win32.MOUSEINPUT
 						{
-							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(RandomAtCursorOriginalX - x, RandomAtCursorOriginalX + x)),
-							dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(RandomAtCursorOriginalY - y, RandomAtCursorOriginalY + y)),
+							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(CursorOriginalPositionX - x, CursorOriginalPositionX + x)),
+							dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(CursorOriginalPositionY - y, CursorOriginalPositionY + y)),
 							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
 						}
 					};
 					inputs.Add(input);
                 }
-				//System.Diagnostics.Debug.Print("Move command added");
 
-				// マウスをクリック
+				// マウスをクリック (Click the mouse)
 				for (int i = 0; i < (doubleClick ? 2 : 1); i++)
 				{
 					// Add a delay if it's a double click.
@@ -210,25 +186,10 @@ namespace AutoClicker
 						inputs.Add(rightclick);
 					}
 				}
-				//System.Diagnostics.Debug.Print("Click commands added");
 
 				Win32.SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf(new Win32.INPUT()));
-				//System.Diagnostics.Debug.Print("Command sent");
-
-				remaining--;
 			}
 			Finished?.Invoke(this, null);
-		}
-
-		public bool IsAlive
-		{
-			get
-			{
-				if (Clicker == null)
-					return false;
-
-				return Clicker.IsAlive;
-			}
 		}
 
 		public void Start()

@@ -454,6 +454,7 @@
             this.numRandomAtCursorY.Maximum = 1000000;
             this.numRandomAtCursorY.Name = "numRandomAtCursorY";
             this.numRandomAtCursorY.Size = new System.Drawing.Size(70, 20);
+            this.numRandomAtCursorY.Value = 50;
             this.numRandomAtCursorY.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
             // lblRandomAtCursorX
@@ -469,6 +470,7 @@
             this.numRandomAtCursorX.Maximum = 1000000;
             this.numRandomAtCursorX.Name = "numRandomAtCursorX";
             this.numRandomAtCursorX.Size = new System.Drawing.Size(70, 20);
+            this.numRandomAtCursorX.Value = 50;
             this.numRandomAtCursorX.ValueChanged += new System.EventHandler(this.LocationHandler);
             // 
             // rdbLocationRandomAtCursor

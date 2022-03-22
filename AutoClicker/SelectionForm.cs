@@ -11,8 +11,6 @@ namespace AutoClicker
 		public Point CurrentTopLeft = new Point();
 		public Point CurrentBottomRight = new Point();
 
-		public int RectangleHeight = new int();
-		public int RectangleWidth = new int();
 		readonly Graphics g;
 		readonly Pen BlackPen = new Pen(Color.Black, 5);
 		readonly Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 5);
@@ -150,8 +148,6 @@ namespace AutoClicker
 		public Point CurrentTopLeft = new Point();
 		public Point CurrentBottomRight = new Point();
 
-		public int RectangleHeight = new int();
-		public int RectangleWidth = new int();
 		readonly Graphics g;
 		readonly Pen BlackPen = new Pen(Color.Black, 5);
 		readonly Pen EraserPen = new Pen(Color.FromArgb(051, 153, 255), 5);
