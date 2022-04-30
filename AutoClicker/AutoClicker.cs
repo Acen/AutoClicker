@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -71,14 +72,28 @@ namespace AutoClicker
 
 			for (int remaining = count; countType == CountType.UntilStopped || remaining > 0; remaining--)
 			{
-				// ちょっと寝る (Take a short rest)
+				#if DEBUG
+				var stopwatch = Stopwatch.StartNew();
+				#endif
 
-				// Fixed Delay
-				if (delayType == DelayType.Fixed)
-					Thread.Sleep(delay);
-				// Ranged Delay
-				else
-					Thread.Sleep(rnd.Next(delay, delayRange));
+				// ちょっと寝る (Take a short rest)
+				if (delay != 0)
+                {
+					var stopwatch_delay = Stopwatch.StartNew();
+
+					// Fixed Delay
+					if (delayType == DelayType.Fixed)
+					{
+						while (stopwatch_delay.ElapsedMilliseconds < delay) ;
+					}
+
+					// Ranged Delay
+					else
+					{
+						int rnd_delay = rnd.Next(delay, delayRange);
+						while (stopwatch_delay.ElapsedMilliseconds < rnd_delay) ;
+					}
+				}
 
 				// Perform chance check.
 				if (chance != 100 && (rnd.Next(100) > chance))
@@ -87,61 +102,53 @@ namespace AutoClicker
 				List<Win32.INPUT> inputs = new List<Win32.INPUT>();
 
 				// Move the mouse if required.
-				if (locationType == LocationType.Fixed)
-				{
-					Win32.INPUT input = new Win32.INPUT
-					{
-						mi = new Win32.MOUSEINPUT
-						{
-							dx = Win32.CalculateAbsoluteCoordinateX(x),
-							dy = Win32.CalculateAbsoluteCoordinateY(y),
-							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
-						}
-					};
-					inputs.Add(input);
-				}
-
-				else if (locationType == LocationType.Random)
-				{
-					Win32.INPUT input = new Win32.INPUT
-					{
-						mi = new Win32.MOUSEINPUT
-						{
-							dx = rnd.Next(65536),
-							dy = rnd.Next(65536),
-							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
-						}
-					};
-					inputs.Add(input);
-				}
-
-				else if (locationType == LocationType.RandomRange)
-				{
-					Win32.INPUT input = new Win32.INPUT
-					{
-						mi = new Win32.MOUSEINPUT
-						{
-							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(x, x + width)),
-							dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(y, y + height)),
-							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
-						}
-					};
-					inputs.Add(input);
-				}
-
-				else if (locationType == LocationType.RandomAtCursor)
+				if (locationType != LocationType.Cursor)
                 {
-					Win32.INPUT input = new Win32.INPUT
+					int CursorX = 0;
+					int CursorY = 0;
+
+					switch (locationType)
+					{
+						case LocationType.Fixed:
+						{
+							CursorX = x;
+							CursorY = y;
+							break;
+						}
+
+						case LocationType.Random:
+						{
+							CursorX = rnd.Next(Screen.PrimaryScreen.Bounds.Width);
+							CursorY = rnd.Next(Screen.PrimaryScreen.Bounds.Height);
+							break;
+						}
+
+						case LocationType.RandomRange:
+						{
+							CursorX = rnd.Next(x, x + width);
+							CursorY = rnd.Next(y, y + height);
+							break;
+						}
+
+						case LocationType.RandomAtCursor:
+						{
+							CursorX = rnd.Next(CursorOriginalPositionX - x, CursorOriginalPositionX + x);
+							CursorY = rnd.Next(CursorOriginalPositionY - y, CursorOriginalPositionY + y);
+							break;
+						}
+					}
+
+					Win32.INPUT mouse_move = new Win32.INPUT
 					{
 						mi = new Win32.MOUSEINPUT
 						{
-							dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(CursorOriginalPositionX - x, CursorOriginalPositionX + x)),
-							dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(CursorOriginalPositionY - y, CursorOriginalPositionY + y)),
+							dx = Win32.CalculateAbsoluteCoordinateX(CursorX),
+							dy = Win32.CalculateAbsoluteCoordinateY(CursorY),
 							dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
 						}
 					};
-					inputs.Add(input);
-                }
+					inputs.Add(mouse_move);
+				}
 
 				// マウスをクリック (Click the mouse)
 				for (int i = 0; i < (doubleClick ? 2 : 1); i++)
@@ -188,6 +195,11 @@ namespace AutoClicker
 				}
 
 				Win32.SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf(new Win32.INPUT()));
+
+				#if DEBUG
+				stopwatch.Stop();
+				Console.WriteLine("Took {0}ms to click.", stopwatch.ElapsedMilliseconds);
+				#endif
 			}
 			Finished?.Invoke(this, null);
 		}

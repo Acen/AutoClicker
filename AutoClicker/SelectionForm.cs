@@ -38,11 +38,8 @@ namespace AutoClicker
 			MouseMove += HandleMouseMove;
 			MouseUp += HandleMouseUp;
 
-			foreach (var screen in Screen.AllScreens)
-			{
-				Width = screen.Bounds.Width;
-				Height = screen.Bounds.Height;
-			}
+			Width = Screen.PrimaryScreen.Bounds.Width;
+			Height = Screen.PrimaryScreen.Bounds.Height;
 
 			g = CreateGraphics();
 		}
@@ -124,11 +121,8 @@ namespace AutoClicker
 			InstanceRef = instanceRef;
 			MouseUp += HandleMouseUp;
 
-			foreach (var screen in Screen.AllScreens)
-			{
-				Width = screen.Bounds.Width;
-				Height = screen.Bounds.Height;
-			}
+			Width = Screen.PrimaryScreen.Bounds.Width;
+			Height = Screen.PrimaryScreen.Bounds.Height;
 		}
 
 		private void HandleMouseUp(object sender, MouseEventArgs e)
@@ -175,11 +169,8 @@ namespace AutoClicker
 			MouseMove += HandleMouseMove;
 			MouseUp += HandleMouseUp;
 
-			foreach (var screen in Screen.AllScreens)
-			{
-				Width = screen.Bounds.Width;
-				Height = screen.Bounds.Height;
-			}
+			Width = Screen.PrimaryScreen.Bounds.Width;
+			Height = Screen.PrimaryScreen.Bounds.Height;
 
 			g = CreateGraphics();
 		}

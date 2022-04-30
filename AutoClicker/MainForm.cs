@@ -220,6 +220,8 @@ namespace AutoClicker
 
 			clicker.Finished += HandleFinished;
 
+			CheckForIllegalCrossThreadCalls = false;
+
 			grpMain.Focus();
 		}
 
@@ -449,12 +451,12 @@ namespace AutoClicker
 			base.WndProc(ref m);
 
 			// Hotkey is pressed
-			if (m.Msg == Win32.WM_HOTKEY)
+			if (m.Msg == Win32.WM_HOTKEY && !txtHotkey.Focused)
 			{
-					if (btnStart.Enabled)
-						BtnStart_Click(null, null);
-					else if (btnStop.Enabled)
-						BtnStop_Click(null, null);
+				if (btnStart.Enabled)
+					BtnStart_Click(null, null);
+				else if (btnStop.Enabled)
+					BtnStop_Click(null, null);
 			}
 		}
 
@@ -527,7 +529,6 @@ namespace AutoClicker
 
 		private void TxtHotkey_KeyDown(object sender, KeyEventArgs e)
 		{
-			e.SuppressKeyPress = true;
 			// Don't want to do anything if only a modifier key is pressed.
 			//     Modifiers                                 Asian keys (kana, hanja, kanji etc)       IME related keys (convert etc)           Korean alt (process)  Windows keys
 			if (!((e.KeyValue >= 16 && e.KeyValue <= 18) || (e.KeyValue >= 21 && e.KeyValue <= 25) || (e.KeyValue >= 28 && e.KeyValue <= 31) || e.KeyValue == 229 || (e.KeyValue >= 91 && e.KeyValue <= 92)))
@@ -636,7 +637,10 @@ namespace AutoClicker
 
 		private void BtnReset_Click(object sender, EventArgs e)
 		{
-			Thread thread = new Thread(Reset);
+			Thread thread = new Thread(Reset)
+			{
+				IsBackground = true
+			};
 			thread.Start();
         }
 
